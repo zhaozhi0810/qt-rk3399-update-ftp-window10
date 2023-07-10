@@ -218,6 +218,7 @@ void Widget::displayMessage(QByteArray buffer)
                     ui->label_netduan3->setEnabled(true);
                     ui->label_Net_Stat3->setEnabled(true);
                     ui->lineEdit_ip3->setEnabled(true);
+                    eth2_dev = 1;
                 }
                 else if(list1[0] == "eth0_dev")
                 {
@@ -227,6 +228,7 @@ void Widget::displayMessage(QByteArray buffer)
                     ui->lineEdit_ip3->setEnabled(true);
                     ui->label_netdev3->setText("eth0");
                     ui->pushButton_5->setText("ping eth0");
+                    eth2_dev = 0;
                 }
                 else if(list1[0] == "ip1")
                 {
@@ -502,4 +504,231 @@ void Widget::displayMessage(QByteArray buffer)
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->textBrowser_version_info->setText(message);
     }
+    //2023-07-10
+    else if(objName=="radioButton_Uarttest")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        int checked = !(message.toInt() == 0);
+
+        ui->radioButton_Uarttest->setChecked(checked);
+    }
+    else if(objName=="radioButton_Spitest")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        int checked = !(message.toInt() == 0);
+
+        ui->radioButton_Spitest->setChecked(checked);
+    }
+    else if(objName=="radioButton_IICtest")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        int checked = !(message.toInt() == 0);
+
+        ui->radioButton_IICtest->setChecked(checked);
+    }
+    else if(objName=="iicspi_info_show")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+
+        ui->textBrowser_IICSPI->setText(message);
+        ui->textBrowser_IICSPI->setFocus();
+    }
+    else if(objName=="uart_info_show")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+
+        ui->textBrowser_IICSPI->append(message);
+    }
+    else if(objName=="pushButton_clear_display")  //
+    {
+        ui->textBrowser_IICSPI->clear();
+    }
+    else if(objName=="getNetDeviceStats")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        qDebug()<<"connetct_init="<<message;
+        QStringList mylist = message.split(",");  //使用逗号分割
+        int i;
+
+        for(i = 0;i<mylist.length();i++)
+        {
+            QStringList list1 = mylist[i].split(":");   //用冒号隔开
+            if(list1.length() > 1)
+            {
+                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
+                if(list1[0] == "enp1s0f0")   //当前显示的页号
+                {
+                    if(list1[1] == "running")
+                    {
+                        ui->label_Net_Stat1->setText("已连接");
+                        ui->label_Net_Stat1->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        if(list1[2] == "same")
+                        {
+                            ui->pushButton_2->setEnabled(true);
+                            ui->label_ping_reson1->setText("");
+
+                        }
+                        else
+                        {   ui->pushButton_2->setEnabled(false);
+                            ui->label_ping_reson1->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
+                        }
+                    }
+                    else if(list1[1] == "broken")
+                    {
+                        ui->label_Net_Stat1->setText("已断开");
+                        ui->label_Net_Stat1->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        ui->pushButton_2->setEnabled(false);
+                        ui->label_ping_reson1->setText("网线已断开，请连接网线");
+                    }
+
+                }
+                else if(list1[0] == "enp1s0f1")
+                {
+                    if(list1[1] == "running")
+                    {
+                        ui->label_Net_Stat2->setText("已连接");
+                        ui->label_Net_Stat2->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        if(list1[2] == "same")
+                        {
+                            ui->pushButton_4->setEnabled(true);
+                            ui->label_ping_reson2->setText("");
+                        }
+                        else
+                        {
+                            ui->pushButton_4->setEnabled(false);
+                            ui->label_ping_reson2->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
+                        }
+                    }
+                    else if(list1[1] == "broken")
+                    {
+                        ui->label_Net_Stat2->setText("已断开");
+                        ui->label_Net_Stat2->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        ui->pushButton_4->setEnabled(false);
+                        ui->label_ping_reson2->setText("网线已断开，请连接网线");
+                    }
+                }
+                else if(list1[0] == "eth2")
+                {
+                    if(list1[1] == "running")
+                    {
+
+                        ui->label_Net_Stat3->setText("已连接");
+                        ui->label_Net_Stat3->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        if(list1[2] == "same")
+                        {
+                            ui->pushButton_5->setEnabled(true);
+                            ui->label_ping_reson3->setText("");
+                        }
+                        else
+                        {
+                            ui->pushButton_5->setEnabled(false);
+                            ui->label_ping_reson3->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
+                        }
+                    }
+                    else if(list1[1] == "broken")
+                    {
+                        ui->label_Net_Stat3->setText("已断开");
+                        ui->label_Net_Stat3->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
+                        ui->pushButton_5->setEnabled(false);
+                        ui->label_ping_reson3->setText("网线已断开，请连接网线");
+                    }
+                }
+//                else if(list1[0] == "eth0")
+//                {
+//                    if(list1[1] == "running")
+//                    {
+
+
+//                    }
+//                    else if(list1[1] == "broken")
+//                    {
+
+//                    }
+//                }
+            }
+        }
+    }
+    else if("ping_info_show" == objName)
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        qDebug()<<"connetct_init="<<message;
+        QStringList mylist = message.split(",");  //使用逗号分割
+
+        if(mylist.length() > 1)
+            ping_info_show(mylist[1],mylist[0].toInt());
+
+    }
+    else if(objName=="pushButton_2")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+
+        if(message == "1")
+        {
+            ui->pushButton_2->setText("结束 ping");
+            ui->checkBox_bigpack1->setEnabled(false);
+            ui->checkBox_adap1->setEnabled(false);
+            ping_status[0] = true;
+            error_count[0] = 0;
+            ui->label_ping_err1->setText("0");
+        }
+        else
+        {
+            ui->pushButton_2->setText("ping enp1s0f0");
+            ui->checkBox_bigpack1->setEnabled(true);
+            ui->checkBox_adap1->setEnabled(true);
+            ping_status[0] = false;
+        }
+
+
+        //on_pushButton_2_clicked();
+    }
+    else if(objName=="pushButton_4")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+
+        if(message == "1")
+        {
+            ui->pushButton_4->setText("结束 ping");
+            ui->checkBox_bigpack2->setEnabled(false);
+            ui->checkBox_adap2->setEnabled(false);
+            ping_status[1] = true;
+            error_count[1] = 0;
+            ui->label_ping_err2->setText("0");
+        }
+        else
+        {
+            ui->pushButton_4->setText("ping enp1s0f1");
+            ui->checkBox_bigpack2->setEnabled(true);
+            ui->checkBox_adap2->setEnabled(true);
+            ping_status[1] = false;
+        }
+        //on_pushButton_4_clicked();
+    }
+    else if(objName=="pushButton_5")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+
+        if(message == "1")
+        {
+            ui->pushButton_5->setText("结束 ping");
+            ui->checkBox_bigpack3->setEnabled(false);
+            ui->checkBox_adap3->setEnabled(false);
+            ping_status[2] = true;
+            error_count[2] = 0;
+            ui->label_ping_err3->setText("0");
+        }
+        else
+        {
+            if(!eth2_dev)
+                ui->pushButton_5->setText("ping eth0");
+            else
+                ui->pushButton_5->setText("ping eth2");
+            ui->checkBox_bigpack3->setEnabled(true);
+            ui->checkBox_adap3->setEnabled(true);
+            ping_status[2] = false;
+        }
+        //on_pushButton_5_clicked();
+    }
+
+
 }

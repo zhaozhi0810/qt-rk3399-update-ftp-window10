@@ -11,25 +11,6 @@
 #include <QCryptographicHash>
 
 
-//#ifdef RK_3399_PLATFORM
-//#ifdef  __cplusplus
-//extern "C" {
-//#endif
-//#include "drv722.h"
-////#include "cpu_mem_cal.h"
-//#ifdef  __cplusplus
-//}
-//#endif
-//#endif
-
-//#ifdef  __cplusplus
-//extern "C" {
-//#endif
-
-////#include "cpu_mem_cal.h"
-//#ifdef  __cplusplus
-//}
-//#endif
 
 const char* g_build_time_str = "Buildtime :" __DATE__ " " __TIME__ ;   //获得编译时间
 QStringList g_show_title;   //获得编译时间
@@ -88,8 +69,6 @@ Widget::Widget(QWidget *parent) :
 {
     int i;
     ui->setupUi(this);
-
-    ReadConfigFile();   //读取配置文件
 
     mysocket = new MytcpSocketClient();
     mysocket->show();
@@ -175,8 +154,6 @@ Widget::Widget(QWidget *parent) :
         ui->label_ftp_stat->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;}");
         mysocket->setui_label_ftp_stat(false);
     }
-
-
 }
 
 
@@ -189,237 +166,6 @@ Widget::~Widget()
 //    delete myftp_server;
 
     delete ui;
-}
-
-
-
-
-
-
-void ReadConfigFile()
-{
-//    QFile file("/home/deepin//qt_rk3399_config.txt");
-//    int index;
-
-//    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-//    {
-//        QString line;
-//        QTextStream in(&file);  //用文件构造流
-
-//        qDebug() << line;
-//        while(!in.atEnd())//字符串有内容
-//        {
-//            line = in.readLine();//读取一行放到字符串里
-//            if(line.isNull())
-//                break;
-//            if(line.length() < 5)  //小于5个字节的，直接跳过
-//                continue;
-
-//            if(line.startsWith("#"))   //
-//                continue;
-
-//            else if(line.startsWith("cpu_stress_start"))   //查找关键字
-//            {
-//                g_sys_conf.is_cpu_stress_start = 1;
-//            }
-//            else if(line.startsWith("gpio_flow_start"))
-//            {
-//                g_sys_conf.is_gpio_flow_start = 1;
-//            }
-//            else if(line.startsWith("key_lights_start"))
-//            {
-//                g_sys_conf.is_key_lights_start = 1;
-//            }
-//            else if(line.startsWith("cpu_test_checked"))
-//            {
-//                g_sys_conf.is_cpu_test_checked = 1;
-//            }
-//            else if(line.startsWith("mem_test_checked"))
-//            {
-//                g_sys_conf.is_mem_test_checked = 1;
-//            }
-//            else if(line.startsWith("default_show_page"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.default_show_page = line.mid(index+1).toInt();
-//                if(g_sys_conf.default_show_page > (PAGES-1) || g_sys_conf.default_show_page < 0)
-//                    g_sys_conf.default_show_page  = 0;
-//            }
-//            else if(line.startsWith("cpu_test_core_num"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.cpu_test_core_num = line.mid(index+1).toInt();
-//                if(g_sys_conf.cpu_test_core_num > 5 || g_sys_conf.cpu_test_core_num < 0)
-//                    g_sys_conf.cpu_test_core_num  = 0;
-
-//            }
-//            else if(line.startsWith("mem_test_usage"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.mem_test_usage = line.mid(index+1).toInt();
-//                if(g_sys_conf.mem_test_usage > 9 || g_sys_conf.mem_test_usage < 0)
-//                    g_sys_conf.mem_test_usage  = 0;
-//            }
-//            else if(line.startsWith("ip1"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.ip1 = line.mid(index+1).toInt();
-
-//                if(g_sys_conf.ip1 > 254 || g_sys_conf.ip1 < 1)
-//                    g_sys_conf.ip1  = 100;
-//            }
-//            else if(line.startsWith("ip2"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.ip2= line.mid(index+1).toInt();
-
-//                if(g_sys_conf.ip2 > 254 || g_sys_conf.ip2 < 1)
-//                    g_sys_conf.ip2  = 100;
-//            }
-//            else if(line.startsWith("ip3"))
-//            {
-//                index = line.indexOf(":");
-//                if(index > 0)
-//                    g_sys_conf.ip3 = line.mid(index+1).toInt();
-
-//                if(g_sys_conf.ip3 > 254 || g_sys_conf.ip3 < 1)
-//                    g_sys_conf.ip3  = 100;
-//            }
-//        }
-//        file.close();
-//    }
-//    else
-//    {
-//        g_sys_conf.is_cpu_stress_start = 0;
-//        g_sys_conf.is_gpio_flow_start = 1;
-//        g_sys_conf.is_key_lights_start = 0;
-//        g_sys_conf.is_cpu_test_checked = 1;
-//        g_sys_conf.is_mem_test_checked = 1;
-//        g_sys_conf.default_show_page  = 0;
-//        g_sys_conf.cpu_test_core_num  = 0;
-//        g_sys_conf.mem_test_usage  = 0;
-//    }
-}
-
-//int is_cpu_test_checked;
-//int is_mem_test_checked;
-
-void SetConfigFile(void)
-{
-//    QString strAll;
-//    QString line;
-//    QStringList list;
-//    QFile qfile("/home/deepin//qt_rk3399_config.txt");
-
-//    //2.把内容填入
-//    if(qfile.open(QIODevice::WriteOnly | QIODevice::Text ))  //写入文件时替换，不存在时追加到最后一行
-//    {
-//        QTextStream stream(&qfile);
-//       if(g_sys_conf.is_cpu_stress_start)
-//       {
-//           stream << "cpu_stress_start\n";  //
-//       }
-//       if(g_sys_conf.is_gpio_flow_start)
-//       {
-//           stream << "gpio_flow_start\n";  //
-//       }
-//       if(g_sys_conf.is_key_lights_start)
-//       {
-//           stream << "key_lights_start\n";  //
-//       }
-//       if(g_sys_conf.is_cpu_test_checked)
-//       {
-//           stream << "cpu_test_checked\n";  //
-//       }
-//       if(g_sys_conf.is_mem_test_checked)
-//       {
-//           stream << "cpu_test_checked\n";  //
-//       }
-
-
-//       if(g_sys_conf.default_show_page > (PAGES-1) || g_sys_conf.default_show_page < 0)
-//           g_sys_conf.default_show_page  = 0;
-//       stream << "default_show_page:" << QString::number(g_sys_conf.default_show_page) <<"\n" ;  //
-
-//       if(g_sys_conf.cpu_test_core_num > 5 || g_sys_conf.cpu_test_core_num < 0)
-//           g_sys_conf.cpu_test_core_num  = 0;
-//       stream << "cpu_test_core_num:" << QString::number(g_sys_conf.cpu_test_core_num) <<"\n" ;  //
-
-
-//       if(g_sys_conf.mem_test_usage > 9 || g_sys_conf.mem_test_usage < 0)
-//           g_sys_conf.mem_test_usage  = 0;
-//       stream << "mem_test_usage:" << QString::number(g_sys_conf.mem_test_usage) <<"\n" ;  //
-
-
-//       if(g_sys_conf.ip1 > 254 || g_sys_conf.ip1 < 1)
-//           g_sys_conf.ip1  = 100;
-//       stream << "ip1:" << QString::number(g_sys_conf.ip1) <<"\n" ;
-//       if(g_sys_conf.ip2 > 254 || g_sys_conf.ip2 < 1)
-//           g_sys_conf.ip2  = 100;
-//       stream << "ip2:" << QString::number(g_sys_conf.ip2) <<"\n" ;
-//       if(g_sys_conf.ip3 > 254 || g_sys_conf.ip3 < 1)
-//           g_sys_conf.ip3  = 100;
-//       stream << "ip3:" << QString::number(g_sys_conf.ip3) <<"\n" ;
-
-//        qfile.close();
-//    }
-//    return ;
-}
-
-
-
-
-void Widget::get_net_device_through_dir(void)
-{
-//    QDir dir("/sys/class/net"); // 创建dir目录对象
-//    QFileInfo fileinfo;
-//    QString name;
-////    dir.setFilter(QDir::Hidden | QDir::NoDotAndDotDot ); // 实现对文件的过滤
-//    dir.setSorting(QDir::Size | QDir::Reversed); // 实现对文件输出的排序
-//    QFileInfoList list = dir.entryInfoList(); // 存放文件信息列表
-
-//    eth0_dev = 0;
-//    eth2_dev = 0;
-//    enp1_dev = 0;
-//    enp2_dev = 0;
-//    qDebug() <<"get_net_device_through_dir list.size() = " << list.size() ;
-
-//    for (int i = 0; i < list.size(); ++i) // 循环读取文件信息列表的信息
-//    {
-//        fileinfo = list.at(i); // 获取单个文件信息
-//        name = fileinfo.baseName(); // 获取单个文件的后缀名
-        
-//        //qDebug() <<"net dev name = " << name;
-//        if(name.startsWith('.'))
-//            continue;
-        
-//        if (QString::compare(name, QString("eth0"), Qt::CaseInsensitive) == 0) // 筛选后缀
-//        {
-//            eth0_dev = 1;
-//            //qDebug() <<"eth0_dev = 1" ;
-//        }
-//        else  if (QString::compare(name, QString("eth2"), Qt::CaseInsensitive) == 0) // 筛选后缀
-//        {
-//            eth2_dev = 1;
-//            //qDebug() <<"eth2_dev = 1" ;
-//        }
-//        else  if (QString::compare(name, QString("enp1s0f0"), Qt::CaseInsensitive) == 0) // 筛选后缀
-//        {
-//            enp1_dev = 1;
-//            //qDebug() <<"enp1_dev = 1" ;
-//        }
-//        else  if (QString::compare(name, QString("enp1s0f1"), Qt::CaseInsensitive) == 0) // 筛选后缀
-//        {
-//            enp2_dev = 1;
-//            //qDebug() <<"enp2_dev = 1" ;
-//        }
-//    }
-
 }
 
 
@@ -492,74 +238,19 @@ void Widget::Palette_button(int ison,int keyval)
             }
         }
     }
-//    else
-//    {
-//#ifdef RK_3399_PLATFORM
-//            drvDimLED(14);   //test
-//#endif
-//    }
+
 
 }
 
 
-#ifdef RK_3399_PLATFORM
-void Widget::light_off_all_leds(void)
-{
-    static bool stat = false;
 
-    if(stat){
-       drvDimAllLED();
-       stat = false;
-    }
-    else
-    {
-        drvLightAllLED();
-        stat = true;
-    }
-}
-
-
-void Widget::circle_light_off_leds(void)
-{
-    static int i = 0;
-    int n = sizeof(led_key_map)/sizeof(led_key_map[0]);
-
-    if(i<n)
-        drvLightLED(led_key_map[i]);
-    else if(i<2*n)
-        drvDimLED(led_key_map[i-n]);
-    else
-    {
-        i = 0;
-        return;
-    }
-    i++;
-}
-
-
-
-
-//超时后的动作
-void Widget::timer_key_leds_slot_Function()
-{
-    if(is_light_all_leds == 1)
-    {
-        light_off_all_leds();
-    }
-    else if(is_light_all_leds == 2)
-    {
-        circle_light_off_leds();
-    }
-
-}
-#endif
-
+#if 0
 //网络测试页，定时检测网络状态,500ms
 void Widget::timer_net_stat_slot_Function()
 {
     int i;
 //    QLabel* Ping_stat[3] = {ui->label_ping_stat1,ui->label_ping_stat2,ui->label_ping_stat3};
-    getNetDeviceStats();
+    //getNetDeviceStats();
 
     for(i=0;i<3;i++)
     {
@@ -581,86 +272,6 @@ void Widget::timer_net_stat_slot_Function()
     }
 }
 
-#if 0
-void Widget::timer_cpu_mem_info_slot_Function()
-{
-    struct globals mem_info;
-    int temp;
-    int mem_usage = 0;
-    int cpu_usage[7];
-    QString read_data;
-    char start_time[64];
-    char run_time[64];
-
-    jiffy_counts_t jifs[7];
-    static long pre_busy[7] = {0};
-    static long pre_total[7] = {0};
-    int i;
-    int cpu_freq[6];
-
-    if(parse_meminfo(&mem_info) > 0)
-    {
-//        qDebug() << "mem_info.total_kb = " << mem_info.total_kb;
-//        qDebug() << "mem_info.available_kb = " << mem_info.available_kb;
-        mem_usage = 100 - mem_info.available_kb*100 / mem_info.total_kb;
-        ui->label_mem_total->setText(QString::number(mem_info.total_kb/1000)+"MB");
-        ui->label_mem_usage->setText(QString::number(mem_usage)+"%");
-    }
-
-    if(parse_cputemp(&temp) > 0)
-    {
-//        qDebug() << "cputemp = " << temp;
-        ui->label_cpu_temp->setText(QString::number(temp));
-
-    }
-    if(parse_gputemp(&temp) > 0)
-    {
-//        qDebug() << "gputemp = " << temp;
-        ui->label_gpu_temp->setText(QString::number(temp));
-    }
-
-    if(read_cpu_jiffy(jifs) > 6 )
-    {
-        for(i=0;i<7;i++)
-        {
-            cpu_usage[i] = (jifs[i].busy-pre_busy[i])*100/(jifs[i].total-pre_total[i]);
-//            qDebug() << "cpu =" << i << " = " << cpu_usage[i];
-            pre_busy[i] = jifs[i].busy;
-            pre_total[i] = jifs[i].total;
-        }
-        ui->label_cpu_usage->setText(QString::number(cpu_usage[0]));
-        ui->label_cpu0_usage->setText(QString::number(cpu_usage[1]));
-        ui->label_cpu1_usage->setText(QString::number(cpu_usage[2]));
-        ui->label_cpu2_usage->setText(QString::number(cpu_usage[3]));
-        ui->label_cpu3_usage->setText(QString::number(cpu_usage[4]));
-        ui->label_cpu4_usage->setText(QString::number(cpu_usage[5]));
-        ui->label_cpu5_usage->setText(QString::number(cpu_usage[6]));
-    }
-
-    for(i=0;i<6;i++)
-    {
-        get_cpu_freq(i,&cpu_freq[i]);
-    }
-#ifdef RK_3399_PLATFORM
-    ui->label_cpu0_freq->setText(QString::number(cpu_freq[0]));
-    ui->label_cpu1_freq->setText(QString::number(cpu_freq[1]));
-    ui->label_cpu2_freq->setText(QString::number(cpu_freq[2]));
-    ui->label_cpu3_freq->setText(QString::number(cpu_freq[3]));
-    ui->label_cpu4_freq->setText(QString::number(cpu_freq[4]));
-    ui->label_cpu5_freq->setText(QString::number(cpu_freq[5]));
-#endif
-
-//    if(myprocess_version->state() == QProcess::Running)
-//    {
-//        myprocess_version->kill();
-//        myprocess_version->waitForFinished();
-//    }
-
-    get_uptime_sysinfo(start_time, run_time);
-
-    ui->label_start_time->setText(start_time);
-    ui->label_has_run_time->setText(run_time);
-}
 #endif
 
 
@@ -670,8 +281,6 @@ bool Widget::eventFilter(QObject *obj, QEvent *event)
 {
 #if 1
     obj = obj;
-//    qDebug() << "eventFilter: " <<event->type();
-//    qDebug() << "index" << ui->stackedWidget->currentIndex();
 
     if(event->type() == QEvent::MouseButtonRelease)
     {
@@ -1157,19 +766,11 @@ void Widget::stackedWidget_page_show(int index)
         ui->label_Page_title->setText(g_show_title.at(index));
 
     if(index == 3){  //进入网络测试页，开启定时器
-    //    timer_net_stat->start(500);
         ui->pushButton_5->setEnabled(false);
         ui->pushButton_2->setEnabled(false);
         ui->pushButton_4->setEnabled(false);
     }
-    else       //退出网络测试页关闭定时器
-       ;// timer_net_stat->stop();
 
-    if(index == 6){  //开启定时器
-    //    timer_cpu_mem_info->start(1000);
-    }
-    else       //退出网络测试页关闭定时器
-       ;// timer_cpu_mem_info->stop();
 
     if(index == 7)
     {
@@ -1178,12 +779,7 @@ void Widget::stackedWidget_page_show(int index)
 
     if(index != 5)
     {
-//        if(myprocess_iicspi->state()==QProcess::Running)
-//        {
-//            myprocess_iicspi->kill();
-//        }
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
+
     }
 
     ui->stackedWidget->setCurrentIndex(index);
@@ -1249,8 +845,6 @@ void Widget::last_func_page_show()
     if(index == 0){
         Palette_button(0,0);//键恢复为灰色
     }
-
-
     stackedWidget_page_show(index);
 }
 
@@ -1258,27 +852,8 @@ void Widget::last_func_page_show()
 
 void Widget::closeEvent(QCloseEvent *event)
 {
-//    QMessageBox box;
-//    //设置文本框的大小
-//    box.setStyleSheet("QLabel{"
-//                          "min-width:500px;"
-//                          "min-height:300px; "
-//                          "font-size:40px;"
-//                          "}");
-// //   box.set
-//    box.setText("确定要退出吗？");
-//    box.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-//    if(box.exec() == QMessageBox::Ok)
-    //if(QMessageBox::information(this, "提示","确定要退出吗？", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
-    {
-        event->accept();
-        qApp->quit();
-    }
-//    else
-//    {
-//        event->ignore();
-//    }
-
+    event->accept();
+    qApp->quit();
 }
 
 
@@ -1290,27 +865,13 @@ void Widget::on_pushButton_start_color_test_clicked()
     if(ui->label_color->isVisible())
         return;
 
-
-//    ui->pushButton_start_color_test->setVisible(false);
-//    ui->pushButton_Exit2->setVisible(false);
-//    ui->pushButton_Last1->setVisible(false);
-//    ui->pushButton_Next2->setVisible(false);
-//    ui->label_Page2_title->setVisible(false);
     ui->label_color->setVisible(true);
     ui->pushButton_lcd_last_color->setVisible(true);
     ui->pushButton_lcd_next_color->setVisible(true);
-//    ui->label_4->setVisible(false);
-//    ui->label_10->setVisible(false);
-//    ui->label_11->setVisible(false);
-//    ui->label_12->setVisible(false);
-//    ui->textBrowser->setVisible(false);
-//    ui->label_23->setVisible(false);
-//     timer_color->start(2000);  //2s
+
     ui->label_color->setStyleSheet("background-color:rgb(255,0,0)");
     ui->label_color->raise();
-#ifdef RK_3399_PLATFORM
-//    drvSetLcdBrt(255);
-#endif
+
     mysocket->sendMessage("pushButton_start_color_test","1");
 }
 
@@ -1352,26 +913,13 @@ void Widget::last_color_page_show()
 //page3 right
 void Widget::next_color_page_show()
 {
-//    qDebug() << "on_pushButton_P3_r_clicked";
-
     if(page2_show_color >= 4)
     {
-     //   page3_show_color = 3;
-//        ui->pushButton_start_color_test->setVisible(true);
-//        ui->pushButton_Exit2->setVisible(true);
-//        ui->pushButton_Last1->setVisible(true);
-//        ui->pushButton_Next2->setVisible(true);
-//        ui->label_Page2_title->setVisible(true);
         ui->label_color->setVisible(false);
         ui->pushButton_lcd_last_color->setVisible(false);
         ui->pushButton_lcd_next_color->setVisible(false);
         ui->label_color->lower();
-//        ui->label_4->setVisible(true);
-//        ui->label_10->setVisible(true);
-//        ui->label_11->setVisible(true);
-//        ui->label_12->setVisible(true);
-//        ui->textBrowser->setVisible(true);
-//        ui->label_23->setVisible(true);
+
         page2_show_color = 0;
         return;
     }
@@ -1403,28 +951,6 @@ void Widget::next_color_page_show()
 void Widget::on_pushButton_clicked()
 {
     mysocket->sendMessage("pushButton","1");
-#if 0
-#ifdef RK_3399_PLATFORM
-    if(!had_keyboard)
-        return;
-#endif
-    if(ui->pushButton->text() == "3.键灯全部点亮"){
-        ui->pushButton->setText("3.键灯全部熄灭");
-        ui->lineEdit_interval->clearFocus();
-        ui->pushButton->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-#ifdef RK_3399_PLATFORM
-       drvLightAllLED();
-#endif
-    }
-    else{
-        ui->pushButton->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-        ui->lineEdit_interval->clearFocus();
-        ui->pushButton->setText("3.键灯全部点亮");
-#ifdef RK_3399_PLATFORM
-       drvDimAllLED();
-#endif
-    }
-#endif
 }
 
 
@@ -1432,26 +958,6 @@ void Widget::on_pushButton_clicked()
 void Widget::on_pushButton_FlowLEDS_clicked()
 {
     mysocket->sendMessage("pushButton_FlowLEDS","1");
-#if 0
-    if(ui->pushButton_FlowLEDS->text() == "4.工装板流水灯"){
-        ui->pushButton_FlowLEDS->setText("4.工装板流水灯结束");
-        ui->lineEdit_interval->clearFocus();
-        ui->pushButton_FlowLEDS->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-#ifdef RK_3399_PLATFORM
-        myprocess_FlowLEds->start("/home/deepin/leds_test  > /dev/null ",QIODevice::ReadOnly);
-    //   drvLightAllLED();
-#endif
-    }
-    else{
-        ui->lineEdit_interval->clearFocus();
-        ui->pushButton_FlowLEDS->setText("4.工装板流水灯");
-        ui->pushButton_FlowLEDS->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-#ifdef RK_3399_PLATFORM
-        myprocess_FlowLEds->kill();
-     //  drvDimAllLED();
-#endif
-    }
-#endif
 }
 
 
@@ -1580,83 +1086,14 @@ void Widget::on_pushButton_Play_clicked()
 void Widget::on_pushButton_6_clicked()
 {
     mysocket->sendMessage("pushButton_6","1");
-#if 0
-#ifdef RK_3399_PLATFORM
-    int time_out = 0;
-    if(!had_keyboard)
-        return;
-#endif
-    if(ui->pushButton_6->text() == "1.键灯全部点亮熄灭控制"){
-        ui->pushButton_6->setText("结束");
-        ui->pushButton_7->setEnabled(false);
-        ui->pushButton->setEnabled(false);
-        ui->lineEdit_interval->clearFocus();
-        ui->pushButton_6->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-#ifdef RK_3399_PLATFORM
-        //键灯控制
-        time_out = ui->lineEdit_interval->text().toInt();
-        if(time_out < 10)
-            time_out = 10;
-        timer_key_leds->start(time_out);
-        is_light_all_leds = 1;
-#endif
-     }
-     else{
-        ui->pushButton_6->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-        ui->pushButton_6->setText("1.键灯全部点亮熄灭控制");
-        ui->pushButton_7->setEnabled(true);
-        ui->pushButton->setEnabled(true);
-        ui->lineEdit_interval->clearFocus();
-#ifdef RK_3399_PLATFORM
-        //键灯控制
-        timer_key_leds->stop();
-        is_light_all_leds = 0;
-#endif
-    }
-#endif
+
 }
 
 //音频测试页：键灯流水灯控制
 void Widget::on_pushButton_7_clicked()
 {
     mysocket->sendMessage("pushButton_7","1");
-#if 0
 
-#ifdef RK_3399_PLATFORM
-    int time_out = 0;
-
-    if(!had_keyboard)
-        return;
-#endif
-    if(ui->pushButton_7->text() == "2.键灯流水灯控制"){
-        ui->pushButton_7->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-        ui->pushButton_7->setText("结束");
-        ui->pushButton_6->setEnabled(false);
-        ui->pushButton->setEnabled(false);
-        ui->lineEdit_interval->clearFocus();
-#ifdef RK_3399_PLATFORM
-        //键灯控制
-        time_out = ui->lineEdit_interval->text().toInt();
-        if(time_out < 10)
-            time_out = 10;
-        timer_key_leds->start(time_out);
-        is_light_all_leds = 2;
-#endif
-    }
-    else{
-        ui->pushButton_7->setText("2.键灯流水灯控制");
-        ui->pushButton_7->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-        ui->pushButton_6->setEnabled(true);
-        ui->pushButton->setEnabled(true);
-        ui->lineEdit_interval->clearFocus();
-#ifdef RK_3399_PLATFORM
-        //键灯控制
-        timer_key_leds->stop();
-        is_light_all_leds = 0;
-
-#endif
-    }
-#endif
 }
 
 
@@ -1680,27 +1117,25 @@ static bool isipAddr_sameSegment(const QString & ip1,const QString & ip2)
         QString str1 = ip1.mid(0,i);
         QString str2 = ip2.mid(0,i);
 
-//        qDebug()<< str1;
-//        qDebug()<< str2;
         if(str1 == str2)  //相等吗
         {
             return true;
         }
 
     }
-    return false;
+
 }
 
 
-
+#if 0
 void Widget::getNetDeviceStats()
 {
     QList<QNetworkInterface> list;
-    QList<QNetworkAddressEntry> list_addrs;
+//    QList<QNetworkAddressEntry> list_addrs;
     QNetworkInterface intf;
     list = QNetworkInterface::allInterfaces(); //获取系统里所有的网卡对象
 
-   // QLabel *net_stat[] = {ui->label_Net_Stat1,ui->label_Net_Stat2,ui->label_Net_Stat3};
+
 
     for (int i = 0; i < list.size(); i++)
     {
@@ -1792,17 +1227,10 @@ void Widget::getNetDeviceStats()
                 }
             }
         }
-
-//        qDebug() << intf.name() << "  " << intf.flags(); // 获取网卡的状态，　是否激活,能否广播组播等　.
-//        qDebug() << "IsUp" << intf.IsUp;
-//        qDebug() << "IsRunning" << intf.IsRunning;
-//        list_addrs = intf.addressEntries(); // 一个网卡可以设多个地址，获取当前网卡对象的所有ip地址
-//        for (int j = 0; j < list_addrs.size(); j++)
-//            qDebug() << list_addrs.at(j).ip().toString();
-
-//        qDebug() << "###############";
     }
 }
+
+
 
 
 void Widget::terminate_ping1()
@@ -1841,6 +1269,9 @@ void Widget::terminate_ping3()
     ping_status[2] = false;
 
 }
+#endif
+
+
 
 void Widget::ping_info_show(QString &strMsg,int ping_num)
 {
@@ -1878,7 +1309,7 @@ void Widget::ping_info_show(QString &strMsg,int ping_num)
             if(Ping_stat[ping_num]->text() != "异常")
             {
                 Ping_stat[ping_num]->setText("异常");
-                Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
+                Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
             }
 
             if(myList[i].contains("Host Unreachable", Qt::CaseInsensitive))
@@ -1898,12 +1329,12 @@ void Widget::ping_info_show(QString &strMsg,int ping_num)
                 {
                     timeval[ping_num]->setText(myList1[1]);
                     Ping_stat[ping_num]->setText("正常");
-                    Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 20pt \"Ubuntu\";}");
+                    Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 10pt \"Ubuntu\";}");
                 }
                 else
                 {
                     Ping_stat[ping_num]->setText("异常");
-                    Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
+                    Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
                     error_count[ping_num] ++;
                     ping_err[ping_num]->setText(QString::number(error_count[0]));
                 }
@@ -2025,6 +1456,8 @@ void Widget::ping3_finished_slot(int ret)
 //网络测试页 ： ping enp1s0f0
 void Widget::on_pushButton_2_clicked()
 {
+    mysocket->sendMessage("pushButton_2","1");
+#if 0
     QString ping_str = "ping 192.168.0.200 ";
     if(ui->pushButton_2->text() == "ping enp1s0f0")
     {
@@ -2049,12 +1482,15 @@ void Widget::on_pushButton_2_clicked()
     {
  //       terminate_ping1();
     }
+#endif
 }
 
 
 //网络测试页 ： ping enp1s0f1
 void Widget::on_pushButton_4_clicked()
 {
+    mysocket->sendMessage("pushButton_4","1");
+#if 0
     QString ping_str = "ping 192.168.1.200 ";
     if(ui->pushButton_4->text() == "ping enp1s0f1")
     {
@@ -2078,12 +1514,15 @@ void Widget::on_pushButton_4_clicked()
     {
 //        terminate_ping2();
     }
+#endif
 }
 
 
 //网络测试页 ： ping eth2
 void Widget::on_pushButton_5_clicked()
 {
+    mysocket->sendMessage("pushButton_5","1");
+#if 0
     QString ping_str = "ping 192.168.2.200 ";
     if(ui->pushButton_5->text() == "ping eth2" || ui->pushButton_5->text() == "ping eth0")
     {
@@ -2108,6 +1547,7 @@ void Widget::on_pushButton_5_clicked()
     {
 //        terminate_ping3();
     }
+#endif
 }
 
 
@@ -2280,13 +1720,13 @@ void Widget::on_pushButton_3_clicked()
 #endif
 #endif
 
-    getNetDeviceStats();
+    //getNetDeviceStats();
 
 
     g_sys_conf.ip1 = ui->lineEdit_ip1->text().toInt();
     g_sys_conf.ip2 = ui->lineEdit_ip2->text().toInt();
     g_sys_conf.ip3 = ui->lineEdit_ip3->text().toInt();
-    SetConfigFile();
+
 
 }
 
@@ -2307,20 +1747,6 @@ void Widget::ifconfig_info_show(int ret)
 
 void Widget::on_pushButton_ifconfig_clicked()
 {
-//    if(ui->pushButton_ifconfig->text() == "查看rk3399主板IP")
-//    {
-//    //    mysocket->sendMessage("pushButton_ifconfig","check");
-////        mysocket->sender();
-//    //    myprocess_ifconfig->start("ifconfig");
-//    //    connect(this->myprocess_ifconfig, SIGNAL(finished(int)),this,SLOT(ifconfig_info_show(int)));//连接信号
-//        ui->pushButton_ifconfig->setText("关闭查看rk3399IP");
-//    }
-//    else if(ui->pushButton_ifconfig->text() == "关闭查看rk3399IP")
-//    {
-//        ui->textBrowser_ifconfig->setVisible(false);
-//        ui->pushButton_ifconfig->setText("查看rk3399主板IP");
-////        delete myprocess_ifconfig;
-//    }
     mysocket->sendMessage("pushButton_ifconfig","check");
 }
 
@@ -2378,47 +1804,14 @@ void Widget::on_horizontalScrollBar_light_sliderMoved(int position)
 }
 
 
-void Widget::iicspi_info_show(int ret)
-{
-//    Q_UNUSED(ret);
-    if(ret == 0)
-    {
- //       ui->textBrowser_IICSPI->setText(myprocess_iicspi->readAllStandardOutput());
-//        ui->textBrowser_IICSPI->setVisible(true);
-        ui->textBrowser_IICSPI->setFocus();
-//        ui->textBrowser_IICSPI->raise();
-    }
-}
 
-
-void Widget::uart_info_show()
-{
-    static int i = 1;
-
-    QString buf = "";//= QString::number(i)+". " + myprocess_uart->readAllStandardOutput();
-
-    ui->textBrowser_IICSPI->append(buf);
-
-    i++;
-}
 
 
 
 //IIC、SPI数据读取
 void Widget::on_pushButton_8_clicked()
 {
-    if(ui->radioButton_IICtest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-//        myprocess_iicspi->start("i2cdump -f -y 4 0x50");
-    }
-    else if(ui->radioButton_Spitest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-//        myprocess_iicspi->start("/home/deepin/gd25qxx_test r");
-    }
+    mysocket->sendMessage("pushButton_8","1");   //把这个值发送过去
 }
 
 
@@ -2426,28 +1819,7 @@ void Widget::on_pushButton_8_clicked()
 //IIC、SPII数据写入
 void Widget::on_pushButton_9_clicked()
 {
-    char cmd[128];
-    unsigned char i;
-
-    if(ui->radioButton_IICtest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-
-        for(i=0;i<128;i++)
-        {
-            sprintf(cmd,"%s %d %d","i2cset -f -y 4 0x50",i,i+1);
-//            myprocess_iicspi->start(cmd);
-//            myprocess_iicspi->waitForFinished();
-        }
-    }
-    else if(ui->radioButton_Spitest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-//        myprocess_iicspi->start("/home/deepin/gd25qxx_test w");
-//        myprocess_iicspi->waitForFinished();
-    }
+    mysocket->sendMessage("pushButton_9","1");   //把这个值发送过去
 }
 
 
@@ -2456,29 +1828,11 @@ void Widget::on_pushButton_9_clicked()
 //IIC、SPI数据擦除
 void Widget::on_pushButton_10_clicked()
 {
-    char cmd[128];
-    unsigned char i;
-
-    if(ui->radioButton_IICtest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-
-        for(i=0;i<128;i++)
-        {
-//            sprintf(cmd,"i2cset -f -y 4 0x50 %d %d",i,255);
-//            myprocess_iicspi->start(cmd);
-//            myprocess_iicspi->waitForFinished();
-        }
-    }
-    else if(ui->radioButton_Spitest->isChecked())
-    {
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
-//        myprocess_iicspi->start("/home/deepin/gd25qxx_test e");
-//        myprocess_iicspi->waitForFinished();
-    }
+    mysocket->sendMessage("pushButton_10","1");   //把这个值发送过去
 }
+
+
+
 
 void Widget::on_radioButton_micpanel_clicked()
 {
@@ -2774,39 +2128,31 @@ void Widget::on_pushButton_disk_info_clicked()
 //}
 
 
-
+//串口测试的选择，checked表示是否选择
 void Widget::on_radioButton_Uarttest_toggled(bool checked)
 {
+    mysocket->sendMessage("radioButton_Uarttest",QString::number(checked));   //把这个值发送过去
+
     if(checked)
     {
         ui->pushButton_8->setEnabled(false);
         ui->pushButton_9->setEnabled(false);
         ui->pushButton_10->setEnabled(false);
-
-//        myprocess_uart->start("/home/deepin/uart0_test4qt");
-
-//        if(myprocess_iicspi->state()==QProcess::Running)
-//        {
-//            myprocess_iicspi->kill();
-//        }
-
         ui->textBrowser_IICSPI->clear();
         ui->textBrowser_IICSPI->setFocus();
-
     }
     else
     {
         ui->pushButton_8->setEnabled(true);
         ui->pushButton_9->setEnabled(true);
         ui->pushButton_10->setEnabled(true);
-//        if(myprocess_uart->state() == QProcess::Running)
-//            myprocess_uart->kill();
     }
 }
 
 void Widget::on_pushButton_clear_display_clicked()
 {
     ui->textBrowser_IICSPI->clear();
+    mysocket->sendMessage("pushButton_clear_display","1");   //把这个值发送过去
 }
 
 
@@ -3312,3 +2658,20 @@ void Widget::on_pushButton_update_clicked()
     ui->pushButton_update->setEnabled(false);
     mysocket->sendMessage("pushButton_update","1");  //发送命令
 }
+
+
+
+
+void Widget::on_radioButton_Spitest_clicked(bool checked)
+{
+    mysocket->sendMessage("radioButton_Spitest",QString::number(checked));   //把这个值发送过去
+}
+
+
+
+void Widget::on_radioButton_IICtest_clicked(bool checked)
+{
+    mysocket->sendMessage("radioButton_IICtest",QString::number(checked));   //把这个值发送过去
+}
+
+

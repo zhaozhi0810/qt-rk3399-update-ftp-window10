@@ -38,15 +38,7 @@ private slots:
 #ifdef RK_3399_PLATFORM
     void timer_key_leds_slot_Function();
 #endif
-    void timer_net_stat_slot_Function();
-//    void timer_cpu_mem_info_slot_Function();
-//    void timer_uart_send_Function();
-//    bool eventFilter(QObject *,QEvent *);           //事件过滤器
-//    void ifconfig_info_show(int ret);
-    void iicspi_info_show(int ret);
-    void uart_info_show();
-//    void sereial_info_show();
-//    void ifconfig_errinfo_show();
+
     void ping1_info_show();
 //    void topcmd_info_show();
     void ping2_info_show();
@@ -139,13 +131,6 @@ private slots:
 
     void on_pushButton_clear_display_clicked();
 
-//    void on_pushButton_lcd_mcu_info_clicked();
-
-//    void on_pushButton_key_mcu_info_clicked();
-
-//    void on_pushButton_drv_so_info_clicked();
-
-//    void on_pushButton_jc_ko_info_clicked();
 
     void on_pushButton_Last_page_clicked();
     void on_pushButton_Next_page_clicked();
@@ -180,6 +165,9 @@ private slots:
 //    void on_pushButton_software_packet_clicked();
     void on_pushButton_update_clicked();
 
+    void on_radioButton_Spitest_clicked(bool checked);
+
+    void on_radioButton_IICtest_clicked(bool checked);
 
 private:
     Ui::Widget *ui;
@@ -210,9 +198,9 @@ private:
     void next_func_page_show();
     void last_func_page_show();
     void stackedWidget_page_show(int index);
-    void terminate_ping1();
-    void terminate_ping2();
-    void terminate_ping3();
+//    void terminate_ping1();
+//    void terminate_ping2();
+//    void terminate_ping3();
     void ping_info_show(QString &strMsg,int ping_num);
     void page9_info_show(void);
     void get_net_device_through_dir(void);
