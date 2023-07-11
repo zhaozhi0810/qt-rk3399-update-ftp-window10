@@ -32,7 +32,7 @@
     </sizepolicy>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QWidget" name="verticalLayoutWidget">
@@ -1556,7 +1556,7 @@ p, li { white-space: pre-wrap; }
        <x>10</x>
        <y>60</y>
        <width>345</width>
-       <height>131</height>
+       <height>179</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
@@ -1598,19 +1598,6 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_netdev3">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
-        </property>
-        <property name="text">
-         <string>eth2:</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QLabel" name="label_netduan2">
         <property name="enabled">
@@ -1627,37 +1614,16 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLineEdit" name="lineEdit_ip3">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_netdev3">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
         </property>
         <property name="styleSheet">
          <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
         </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhDigitsOnly</set>
-        </property>
         <property name="text">
-         <string>100</string>
-        </property>
-        <property name="maxLength">
-         <number>3</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>eth2:</string>
         </property>
        </widget>
       </item>
@@ -1695,8 +1661,8 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEdit_ip1">
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="lineEdit_ip3">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -1758,6 +1724,40 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lineEdit_ip1">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhDigitsOnly</set>
+        </property>
+        <property name="text">
+         <string>100</string>
+        </property>
+        <property name="maxLength">
+         <number>3</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -1971,10 +1971,10 @@ background-color: rgb(204, 0, 0);</string>
     <widget class="QTextBrowser" name="textBrowser_help_page4">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>60</x>
        <y>50</y>
-       <width>101</width>
-       <height>51</height>
+       <width>21</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="html">

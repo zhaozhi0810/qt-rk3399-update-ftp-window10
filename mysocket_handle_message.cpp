@@ -729,6 +729,59 @@ void Widget::displayMessage(QByteArray buffer)
         }
         //on_pushButton_5_clicked();
     }
+    //2023-07-11
+    else if(objName=="lineEdit_ip1")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        ui->lineEdit_ip1->setText(message);
+    }
+    else if(objName=="lineEdit_ip2")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        ui->lineEdit_ip2->setText(message);
+    }
+    else if(objName=="lineEdit_ip3")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        ui->lineEdit_ip3->setText(message);
+    }
+    else if(objName=="checkBox_bigpack1")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_bigpack1->setChecked(checked);   //这个....
+    }
+    else if(objName=="checkBox_bigpack2")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_bigpack2->setChecked(checked);   //这个....
+    }
+    else if(objName=="checkBox_bigpack3")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_bigpack3->setChecked(checked);   //这个....
+    }
+    else if(objName=="checkBox_adap1")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_adap1->setChecked(checked);   //这个....
+    }
+    else if(objName=="checkBox_adap2")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_adap2->setChecked(checked);   //这个....
+    }
+    else if(objName=="checkBox_adap3")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->checkBox_adap3->setChecked(checked);   //这个....
+    }
+
 
 
 }

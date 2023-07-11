@@ -169,6 +169,24 @@ private slots:
 
     void on_radioButton_IICtest_clicked(bool checked);
 
+    void on_lineEdit_ip1_textEdited(const QString &arg1);
+
+    void on_lineEdit_ip2_textEdited(const QString &arg1);
+
+    void on_lineEdit_ip3_textEdited(const QString &arg1);
+
+    void on_checkBox_bigpack1_clicked(bool checked);
+
+    void on_checkBox_adap1_clicked(bool checked);
+
+    void on_checkBox_bigpack2_clicked(bool checked);
+
+    void on_checkBox_adap2_clicked(bool checked);
+
+    void on_checkBox_bigpack3_clicked(bool checked);
+
+    void on_checkBox_adap3_clicked(bool checked);
+
 private:
     Ui::Widget *ui;
     MytcpSocketClient *mysocket;

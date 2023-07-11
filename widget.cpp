@@ -1312,8 +1312,8 @@ void Widget::ping_info_show(QString &strMsg,int ping_num)
                 Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
             }
 
-            if(myList[i].contains("Host Unreachable", Qt::CaseInsensitive))
-                error_count[ping_num] ++;
+            //if(myList[i].contains("Host Unreachable", Qt::CaseInsensitive))
+            error_count[ping_num] ++;
             ping_err[ping_num]->setText(QString::number(error_count[ping_num]));
         }
 
@@ -1611,138 +1611,8 @@ void Widget::on_checkBox_toggled(bool checked)
 //网络测试页，配置3399网卡ip
 void Widget::on_pushButton_3_clicked()
 {
-#ifdef RK_3399_PLATFORM
-    int ip_val;
-    int ret;
-    if(ui->lineEdit_ip1->text().isEmpty())
-        ui->lineEdit_ip1->setText("100");
-    if(ui->lineEdit_ip2->text().isEmpty())
-        ui->lineEdit_ip2->setText("100");
-    if(ui->lineEdit_ip3->text().isEmpty())
-        ui->lineEdit_ip3->setText("100");
-//    system("nmcli con delete eth2");
-//    system("nmcli con delete eth0");
-#if 0
-    QString cmd;
-    QByteArray ba;
-    char* ch;
-//    nmcli con add type ethernet con-name enp1s0f0 ifname enp1s0f0 ip4 192.168.0.55/24 gw4 192.168.0.1 cloned-mac 02:02:03:04:05:06
-//    nmcli con add type ethernet con-name enp1s0f1 ifname enp1s0f1 ip4 168.75.45.30/22 gw4 168.75.44.1 cloned-mac 02:02:03:04:05:07
-//    nmcli con add type ethernet con-name eth2 ifname eth2 ip4 192.168.2.100/24 gw4 192.168.2.1 cloned-mac 1a:0f:e8:2f:e7:5f
-
-    if(enp1_dev)
-    {
-        cmd = "nmcli con add type ethernet con-name enp1s0f0 ifname enp1s0f0 ip4 192.168.0."+ ui->lineEdit_ip1->text() + "/24 gw4 192.168.0.1 cloned-mac 02:02:03:04:05:06";
-        qDebug() << "cmd0 = " << cmd;
-        ba = cmd.toLatin1();
-        ret = system(ba.data());
-    }
-
-    if(enp2_dev)
-    {
-        cmd = "nmcli con add type ethernet con-name enp1s0f1 ifname enp1s0f1 ip4 192.168.1."+ui->lineEdit_ip1->text() +"/24 gw4 192.168.1.1 cloned-mac 02:02:03:04:05:06";
-        qDebug() << "cmd1 = " << cmd;
-        ba = cmd.toLatin1();
-        ret = system(ba.data());
-    }
-
-    if(eth2_dev)
-    {
-        cmd = "nmcli con add type ethernet con-name  eth2  ifname eth2 ip4 192.168.2."+ui->lineEdit_ip1->text() +"/24 gw4 192.168.2.1 cloned-mac 1a:0f:e8:2f:e7:5f";
-        qDebug() << "cmd2 = " << cmd;
-        ba = cmd.toLatin1();
-        ret = system(ba.data());
-    }
-    else if(eth0_dev)
-    {
-        cmd = "nmcli con add type ethernet con-name eth0  ifname eth0 ip4 192.168.2."+ui->lineEdit_ip1->text( )+"/24 gw4 192.168.2.1 cloned-mac 1a:0f:e8:2f:e7:5f";
-        qDebug() << "cmd3 = " << cmd;
-        ba = cmd.toLatin1();
-        ret = system(ba.data());
-    }
-
-#else
-
-    char const *  str_name[] = {"enp1s0f0","enp1s0f1","eth2","eth0"};
-    char num[] = {'0','1','2'};
-    char const * str1_ipset = "nmcli connection modify --temporary '%s' connection.autoconnect yes ipv4.method manual ipv4.address 192.168.%c.%s/24 ipv4.gateway 192.168.%c.1  ipv4.dns 114.114.114.114";
-    char cmd[256] = {0};
-
-
-    if(enp1_dev)
-    {
-        sprintf(cmd,str1_ipset,str_name[0],num[0],ui->lineEdit_ip1->text().toLatin1().data(),num[0]);
-    //    qDebug() << "cmd0 = " << cmd;
-        ret = system(cmd);
-        //ret = system("nmcli connection modify --temporary 'enp1s0f0' connection.autoconnect yes ipv4.method manual ipv4.address 192.168.0.100/24  ipv4.gateway 192.168.0.1  ipv4.dns 114.114.114.114");
-    //    qDebug() <<"system 1 :" << ret;
-        ret = system("nmcli connection up enp1s0f0");
-    //    qDebug() <<"system 2 :" << ret;
-    }
-
-    if(enp2_dev)
-    {
-        sprintf(cmd,str1_ipset,str_name[1],num[1],ui->lineEdit_ip2->text().toLatin1().data(),num[1]);
-    //    qDebug() << "cmd1 = " << cmd;
-        ret = system(cmd);
-        //ret = system("nmcli connection modify --temporary 'enp1s0f1' connection.autoconnect yes ipv4.method manual ipv4.address 192.168.1.100/24  ipv4.gateway 192.168.1.1  ipv4.dns 114.114.114.114");
-    //    qDebug() <<"system 3 :" << ret;
-        ret = system("nmcli connection up enp1s0f1");
-    //    qDebug() <<"system 4 :" << ret;
-    }
-
-    if(eth2_dev)
-        sprintf(cmd,str1_ipset,str_name[2],num[2],ui->lineEdit_ip3->text().toLatin1().data(),num[2]);
-    else if(eth0_dev)
-        sprintf(cmd,str1_ipset,str_name[3],num[2],ui->lineEdit_ip3->text().toLatin1().data(),num[2]);
-    qDebug() << "cmd2 = " << cmd;
-    ret = system(cmd);
-    //ret = system("nmcli connection modify --temporary 'eth2' connection.autoconnect yes ipv4.method manual ipv4.address 192.168.2.100/24  ipv4.gateway 192.168.2.1  ipv4.dns 114.114.114.114");
-    qDebug() <<"system 5 :" << ret;
-    if(ret)
-    {
-        if(eth2_dev)
-            ret = system("nmcli con add type ethernet con-name eth2 ifname eth2 ip4 192.168.2.100/24 gw4 192.168.2.1");
-        else if(eth0_dev)
-            ret = system("nmcli con add type ethernet con-name eth0 ifname eth0 ip4 192.168.2.100/24 gw4 192.168.2.1");
-    }
-    else
-    {
-        if(eth2_dev)
-            ret = system("nmcli connection up eth2");
-        else if(eth0_dev)
-        {
-            ret = system("nmcli connection up eth0");
-            qDebug() <<"system nmcli connection up eth0 :" << ret;
-        }
-    }
-//    qDebug() <<"system 6 :" << ret;
-#endif
-#endif
-
-    //getNetDeviceStats();
-
-
-    g_sys_conf.ip1 = ui->lineEdit_ip1->text().toInt();
-    g_sys_conf.ip2 = ui->lineEdit_ip2->text().toInt();
-    g_sys_conf.ip3 = ui->lineEdit_ip3->text().toInt();
-
-
+    mysocket->sendMessage("pushButton_3","1");   //把这个值发送过去
 }
-
-#if 0
-void Widget::ifconfig_info_show(int ret)
-{
-    if(ret == 0)
-    {
-        ui->textBrowser_ifconfig->setText(myprocess_ifconfig->readAllStandardOutput());
-        ui->textBrowser_ifconfig->setVisible(true);
-        ui->textBrowser_ifconfig->setFocus();
-        ui->textBrowser_ifconfig->raise();
-
-    }
-}
-#endif
 
 
 void Widget::on_pushButton_ifconfig_clicked()
@@ -2675,3 +2545,53 @@ void Widget::on_radioButton_IICtest_clicked(bool checked)
 }
 
 
+
+//只有被修改才会触发，在程序中setText修改不回触发
+void Widget::on_lineEdit_ip1_textEdited(const QString &arg1)
+{
+    mysocket->sendMessage("lineEdit_ip1",arg1);   //把这个值发送过去
+}
+
+void Widget::on_lineEdit_ip2_textEdited(const QString &arg1)
+{
+    mysocket->sendMessage("lineEdit_ip2",arg1);   //把这个值发送过去
+}
+
+void Widget::on_lineEdit_ip3_textEdited(const QString &arg1)
+{
+    mysocket->sendMessage("lineEdit_ip3",arg1);   //把这个值发送过去
+}
+
+
+
+
+//
+void Widget::on_checkBox_bigpack1_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_bigpack1",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_checkBox_adap1_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_adap1",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_checkBox_bigpack2_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_bigpack2",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_checkBox_adap2_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_adap2",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_checkBox_bigpack3_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_bigpack3",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_checkBox_adap3_clicked(bool checked)
+{
+    mysocket->sendMessage("checkBox_adap3",QString::number(checked));   //把这个值发送过去
+}
