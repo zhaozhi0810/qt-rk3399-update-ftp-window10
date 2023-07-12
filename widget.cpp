@@ -76,7 +76,7 @@ Widget::Widget(QWidget *parent) :
     connect(mysocket, &MytcpSocketClient::disconnected_server, this, &Widget::hide);  //disconnected_server
     connect(mysocket, &MytcpSocketClient::newMessage, this, &Widget::displayMessage);
 
-    version_store_string.clear();  //清空
+//    version_store_string.clear();  //清空
 
     ui->label->setText(g_build_time_str);
     ui->label_2->setText("Create by dazhi-2023");
@@ -104,15 +104,17 @@ Widget::Widget(QWidget *parent) :
     ui->label_color->setVisible(false);
     ui->pushButton_lcd_last_color->setVisible(false);
     ui->pushButton_lcd_next_color->setVisible(false);
+    ui->radioButton_micpanel->setEnabled(false);
+    ui->radioButton_michand->setEnabled(false);
 
     buttonFrame = new QFrame;
     page2_show_color = 0;
-    check_version_wait = 0;   //获取版本的时候时间比较长，防止多次按钮
+//    check_version_wait = 0;   //获取版本的时候时间比较长，防止多次按钮
     ui->pushButton_update->setEnabled(false);  //版本对比后决定是否升级
     //ui->pushButton_version_compare->setEnabled(true);
     update_command_wait = 0;  //升级，首先需要打包，需要一些时间等待，防止多次按钮
     is_test_press = 0;     //测试键没有按下
-    key_light_connect = 1;  //键灯关联
+//    key_light_connect = 1;  //键灯关联
 
     intValidator = new QIntValidator;
     intValidator->setRange(1,999999);
@@ -126,22 +128,21 @@ Widget::Widget(QWidget *parent) :
     ui->textBrowser_ifconfig->setVisible(false);//显示ip信息的暂时不可见
 
 
-    lightpwm = 100;
+    //lightpwm = 100;
 
     ui->label_ping_reson1->setText("");
     ui->label_ping_reson2->setText("");
     ui->label_ping_reson3->setText("");
 
-    lcdPwm = 90;
+    //lcdPwm = 90;
 
-    iicspi_connect = 0;
+//    iicspi_connect = 0;
 
     ui->toolButton_left->setVisible(false);
     ui->toolButton_right->setVisible(false);
     ui->toolButton_ok->setVisible(false);
     ui->label_ftp_stat->setText("");
-    //mysocket->ui->label_ftp_stat1->setText("");
-    // *TODO: Allow using port 0.
+
     myftp_server = new FtpServer(this, myftp_rootPath, 21, myftp_userName, myftp_password, false, false);
     if (myftp_server->isListening()) {
         qDebug() << QString("Listening at %1:21").arg(FtpServer::lanIp()).toStdString().c_str();
@@ -163,7 +164,7 @@ Widget::Widget(QWidget *parent) :
 
 Widget::~Widget()
 {
-//    delete myftp_server;
+    delete myftp_server;
 
     delete ui;
 }
@@ -185,7 +186,7 @@ void Widget::Palette_button(int ison,int keyval)
                                    ui->toolButton_7,ui->toolButton_8,ui->toolButton_9,ui->toolButton_11,ui->toolButton_12,ui->toolButton_Tell,ui->toolButton_Test,
                                    ui->toolButton_V1,ui->toolButton_V2,ui->toolButton_Up,ui->toolButton_Down,ui->toolButton_Ptt,ui->toolButton_left,ui->toolButton_right,ui->toolButton_ok
                                    };
-    qDebug()<<"Palette_button ison="<<ison <<" key" << keyval;
+//    qDebug()<<"Palette_button ison="<<ison <<" key" << keyval;
     QPalette p = buttonFrame->palette();
     QString color = "background-color:white;";
     if(ison)
@@ -225,543 +226,26 @@ void Widget::Palette_button(int ison,int keyval)
                 //进行两项设置
 
 
-                qDebug()<<"setPalette i=" << i << key_buttons[i];
-#ifdef RK_3399_PLATFORM
-//                qDebug() << " i = " <<i;
-//                qDebug() << " key_map i = " << led_key_map[i];
-//                if(ison && key_light_connect)
-//                    drvLightLED(led_key_map[i]);
-//                else
-//                    drvDimLED(led_key_map[i]);
-#endif
+           //     qDebug()<<"setPalette i=" << i << key_buttons[i];
+
                 break;
             }
         }
     }
-
-
 }
 
 
 
-#if 0
-//网络测试页，定时检测网络状态,500ms
-void Widget::timer_net_stat_slot_Function()
-{
-    int i;
-//    QLabel* Ping_stat[3] = {ui->label_ping_stat1,ui->label_ping_stat2,ui->label_ping_stat3};
-    //getNetDeviceStats();
-
-    for(i=0;i<3;i++)
-    {
-        if(ping_status[i]) //已经开始ping
-        {
-            if(icmp_saved[i] != icmp_cur[i])
-            {
-                icmp_saved[i] = icmp_cur[i];
-            }
-            else
-            {
-//                if(Ping_stat[i]->text() != "异常")
-//                {
-//                    Ping_stat[i]->setText("异常");
-//                    Ping_stat[i]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
-//                }
-            }
-        }
-    }
-}
-
-#endif
 
 
 
-//label_color
-bool Widget::eventFilter(QObject *obj, QEvent *event)
-{
-#if 1
-    obj = obj;
 
-    if(event->type() == QEvent::MouseButtonRelease)
-    {
-        if((ui->stackedWidget->currentIndex() == 2))
-        {
-            QMouseEvent *e  = (QMouseEvent*)(event);
-            QPoint sPoint2= e->pos();
-     //       qDebug() << "sPoint2: " <<sPoint2.rx();
-            if(sPoint2.rx() < 350)
-            {
-                last_color_page_show();
-            }
-            else if(sPoint2.rx() > 370)
-            {
-                next_color_page_show();
-            }
-        }
-        return true;
-    }
-    else if(event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *KeyEvent = static_cast<QKeyEvent*>(event);
-
-
-        if(ui->stackedWidget->currentIndex() == 0) //第一页，按键测试页
-        {
-            Palette_button(1,KeyEvent->key());
-        }
- #if 0
-        else if(ui->stackedWidget->currentIndex() == 2)//lcd颜色测试页，按键变换颜色
-        {
-            if(KeyEvent->key() == Qt::Key_Up)
-            {
-                if(ui->label_color->isVisible())
-                {
-                    last_color_page_show();
-                }
-                else
-                {
-                    lcdPwm = ui->horizontalScrollBar_light->value();
-                    if(lcdPwm < 100)
-                    {
-                        lcdPwm += 5;
-                        if(lcdPwm > 100)
-                            lcdPwm = 100;
-                        ui->horizontalScrollBar_light->setValue(lcdPwm);
-                     //   ui->label_light_val->setText(QString::number(lcdPwm));
-                    //    qDebug() << "lcdPwm = " << lcdPwm;
-                    }
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_Down)
-            {
-                if(ui->label_color->isVisible())
-                {
-                    next_color_page_show();
-                }
-                else
-                {
-                    lcdPwm = ui->horizontalScrollBar_light->value();
-                    if(lcdPwm > 0)
-                    {
-                        lcdPwm -= 5;
-                        if(lcdPwm < 0)
-                            lcdPwm = 0;
-                        ui->horizontalScrollBar_light->setValue(lcdPwm);
-                     //   ui->label_light_val->setText(QString::number(lcdPwm));
-                     //   qDebug() << "lcdPwm = " << lcdPwm;
-                    }
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_C)
-            {
-                on_pushButton_start_color_test_clicked();
-            }
-        }
-        else if(ui->stackedWidget->currentIndex() == 1)  //键灯测试页
-        {
-            if(KeyEvent->key() == Qt::Key_F1)  // L1    Qt::Key_F1
-            {
-                ui->lineEdit_interval->backspace();
-            }
-            else if(KeyEvent->key() == Qt::Key_F3)  // L2    Qt::Key_F3
-            {
-                on_pushButton_6_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F5)  // L3    Qt::Key_F5
-            {
-                on_pushButton_7_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F7)  // L4    Qt::Key_F7
-            {
-                on_pushButton_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_Up)
-            {
-                if(lightpwm < 100){
-                    lightpwm +=5;
-                    if(lightpwm > 100)
-                        lightpwm = 100;
-                 }
-                ui->verticalScrollBar_lightpwm2->setValue(lightpwm);
-
-            }
-            else if(KeyEvent->key() == Qt::Key_Down)
-            {
-                if(lightpwm > 0){
-                    lightpwm -=5;
-                    if(lightpwm < 0 )
-                        lightpwm = 0;
-                 }
-                ui->verticalScrollBar_lightpwm2->setValue(lightpwm);//drvSetLedBrt(lightpwm);
-            }
-        }
-
-        else if(ui->stackedWidget->currentIndex() == 3)  //网络测试页
-        {
-            if(KeyEvent->key() == Qt::Key_F1)  // L1    Qt::Key_F1
-            {
-                if(ui->lineEdit_ip1 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip1->backspace();
-                }
-                else if(ui->lineEdit_ip2 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip2->backspace();
-                }
-                else if(ui->lineEdit_ip3 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip3->backspace();
-                }
-
-            }
-            else if(KeyEvent->key() == Qt::Key_F5)
-            {
-                if(ui->pushButton_2->isEnabled())
-                    on_pushButton_2_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F7)
-            {
-                if(ui->pushButton_4->isEnabled())
-                    on_pushButton_4_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F9)
-            {
-                if(ui->pushButton_5->isEnabled())
-                    on_pushButton_5_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F11)   //内通按键 配置ip
-            {
-                on_pushButton_3_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F12)    //外通按键，查看ip
-            {
-                on_pushButton_ifconfig_clicked();
-            }
-            else if(KeyEvent->key() == Qt::Key_F2)
-            {
-                if(ui->lineEdit_ip1 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip2->setFocus();
-                }
-                else if(ui->lineEdit_ip2 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip3->setFocus();
-                }
-                else if(ui->lineEdit_ip3 == qobject_cast<QLineEdit*>(ui->stackedWidget->focusWidget()))
-                {
-                    ui->lineEdit_ip3->clearFocus();
-                }
-                else
-                {
-                    ui->lineEdit_ip3->setFocus();
-                }
-
-            }
-            else if(KeyEvent->key() == Qt::Key_F6)    //调整大包，自适应
-            {
-                if(!ping_status[0])
-                {
-                    if(!ui->checkBox_bigpack1->isChecked() && !ui->checkBox_adap1->isChecked())
-                        ui->checkBox_bigpack1->setChecked(true);
-                    else if(ui->checkBox_bigpack1->isChecked() && !ui->checkBox_adap1->isChecked())
-                        ui->checkBox_adap1->setChecked(true);
-                    else if(ui->checkBox_bigpack1->isChecked() && ui->checkBox_adap1->isChecked())
-                        ui->checkBox_bigpack1->setChecked(false);
-                    else if(!ui->checkBox_bigpack1->isChecked() && ui->checkBox_adap1->isChecked())
-                        ui->checkBox_adap1->setChecked(false);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_F8)    //调整大包，自适应
-            {
-                if(!ping_status[1])
-                {
-                    if(!ui->checkBox_bigpack2->isChecked() && !ui->checkBox_adap2->isChecked())
-                        ui->checkBox_bigpack2->setChecked(true);
-                    else if(ui->checkBox_bigpack2->isChecked() && !ui->checkBox_adap2->isChecked())
-                        ui->checkBox_adap2->setChecked(true);
-                    else if(ui->checkBox_bigpack2->isChecked() && ui->checkBox_adap2->isChecked())
-                        ui->checkBox_bigpack2->setChecked(false);
-                    else if(!ui->checkBox_bigpack2->isChecked() && ui->checkBox_adap2->isChecked())
-                        ui->checkBox_adap2->setChecked(false);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_F10)    //调整大包，自适应
-            {
-                if(!ping_status[2])
-                {
-                    if(!ui->checkBox_bigpack3->isChecked() && !ui->checkBox_adap3->isChecked())
-                        ui->checkBox_bigpack3->setChecked(true);
-                    else if(ui->checkBox_bigpack3->isChecked() && !ui->checkBox_adap3->isChecked())
-                        ui->checkBox_adap3->setChecked(true);
-                    else if(ui->checkBox_bigpack3->isChecked() && ui->checkBox_adap3->isChecked())
-                        ui->checkBox_bigpack3->setChecked(false);
-                    else if(!ui->checkBox_bigpack3->isChecked() && ui->checkBox_adap3->isChecked())
-                        ui->checkBox_adap3->setChecked(false);
-                }
-            }
-        }
-        else if(ui->stackedWidget->currentIndex() == 4)//音频测试页
-        {
-            int val;
-            if(KeyEvent->key() == Qt::Key_F1)
-            {
-                if(is_test_press == 1)
-                {
-                    if(ui->radioButton_SpeakVol->isChecked())
-                    {
-                        ui->radioButton_SpeakVol->setChecked(false);
-#ifdef RK_3399_PLATFORM
-                        //drvSetSpeakVolume(value);
-#endif
-                    }
-                    else
-                    {
-                        ui->radioButton_SpeakVol->setChecked(true);
-#ifdef RK_3399_PLATFORM
-                        //drvSetSpeakVolume(value);
-#endif
-                    }
-                }
-                else
-                {
-                    val = ui->horizontalScrollBar_SpeakVol->value();
-                    if(val > 0)
-                    {
-                        val -= 5;
-                        if(val < 0)
-                            val = 0;
-                    }
-                    ui->horizontalScrollBar_SpeakVol->setValue(val);
-                }
-
-            }
-            else if(KeyEvent->key() == Qt::Key_F3)
-            {
-                if(is_test_press == 1)
-                {
-                    if(ui->radioButton_HandVol->isChecked())
-                    {
-                        ui->radioButton_HandVol->setChecked(false);
-#ifdef RK_3399_PLATFORM
-                        drvEnableHandout();
-#endif
-                    }
-                    else
-                    {
-                        ui->radioButton_HandVol->setChecked(true);
-#ifdef RK_3399_PLATFORM
-                        drvDisableHandout();
-#endif
-                    }
-                }
-                else
-                {
-                    val = ui->horizontalScrollBar_HandVol->value();
-                    if(val > 0)
-                    {
-                        val -= 5;
-                        if(val < 0)
-                            val = 0;
-                    }
-                    ui->horizontalScrollBar_HandVol->setValue(val);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_F5)
-            {
-                if(is_test_press == 1)
-                {
-                    if(ui->radioButton_EarphVol->isChecked())
-                    {
-                        ui->radioButton_EarphVol->setChecked(false);
-#ifdef RK_3399_PLATFORM
-                        drvEnableEarphout();
-#endif
-                    }
-                    else
-                    {
-                        ui->radioButton_EarphVol->setChecked(true);
-#ifdef RK_3399_PLATFORM
-                        drvDisableEarphout();
-#endif
-                    }
-                }
-                else
-                {
-                    val = ui->horizontalScrollBar_EarphVol->value();
-                    if(val > 0)
-                    {
-                        val -= 5;
-                        if(val < 0)
-                            val = 0;
-                    }
-                    ui->horizontalScrollBar_EarphVol->setValue(val);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_F2)
-            {
-                val = ui->horizontalScrollBar_SpeakVol->value();
-                if(val < 100)
-                {
-                    val += 5;
-                    if(val > 100)
-                        val = 100;
-                }
-                ui->horizontalScrollBar_SpeakVol->setValue(val);
-
-            }
-            else if(KeyEvent->key() == Qt::Key_F4)
-            {
-                val = ui->horizontalScrollBar_HandVol->value();
-                if(val < 100)
-                {
-                    val += 5;
-                    if(val > 100)
-                        val = 100;
-                }
-                ui->horizontalScrollBar_HandVol->setValue(val);
-            }
-            else if(KeyEvent->key() == Qt::Key_F6)
-            {
-                val = ui->horizontalScrollBar_EarphVol->value();
-                if(val < 100)
-                {
-                    val += 5;
-                    if(val > 100)
-                        val = 100;
-                }
-                ui->horizontalScrollBar_EarphVol->setValue(val);
-            }
-            else if(KeyEvent->key() == Qt::Key_F9)
-            {
-                if(ui->radioButton_rec->isChecked())
-                {
-                    ui->radioButton_loop->setChecked(true);
-                    ui->radioButton_rec->setChecked(false);
-
-                }
-                else if(ui->radioButton_loop->isChecked())
-                {
-                    ui->radioButton_loop->setChecked(false);
-                    ui->radioButton_playrec->setChecked(true);
-                    ui->radioButton_michand->setEnabled(false);
-                    ui->radioButton_micpanel->setEnabled(false);
-                }
-                else if(ui->radioButton_playrec->isChecked())
-                {
-                    ui->radioButton_playrec->setChecked(false);
-                    ui->radioButton_playmusic->setChecked(true);
-
-                }
-                else if(ui->radioButton_playmusic->isChecked())
-                {
-                    ui->radioButton_playmusic->setChecked(false);
-                    ui->radioButton_rec->setChecked(true);
-                    ui->radioButton_michand->setEnabled(true);
-                    ui->radioButton_micpanel->setEnabled(true);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_F10)
-            {
-                if(ui->radioButton_rec->isChecked() || ui->radioButton_loop->isChecked())
-                {
-                    if(ui->radioButton_michand->isChecked())
-                    {
-                        ui->radioButton_michand->setChecked(false);
-                        ui->radioButton_micpanel->setChecked(true);
-#ifdef RK_3399_PLATFORM
-                        drvSelectHandFreeMic();
-#endif
-                    }
-                    else if(ui->radioButton_micpanel->isChecked())
-                    {
-                        ui->radioButton_micpanel->setChecked(false);
-                        ui->radioButton_michand->setChecked(true);
-#ifdef RK_3399_PLATFORM
-                        drvSelectHandMic();
-#endif
-                    }
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_C)
-            {
-                on_pushButton_Play_clicked();
-            }
-
-        }
-//        else if(ui->stackedWidget->currentIndex() == 5)//触摸屏测试页
-//        {
-//            if(KeyEvent->key() == Qt::Key_C) //拨号/电话键
-//            {
-//                on_pushButton_start_lcd_touch_clicked();
-//            }
-//        }
-
-
-
-        if(is_test_press == 1)  //判断是否有组合键功能
-        {
-            if(KeyEvent->key() >= Qt::Key_1 && KeyEvent->key() <= Qt::Key_9)
-            {
-                stackedWidget_page_show(KeyEvent->key() - Qt::Key_1);
-            }
-            else if(KeyEvent->key() == Qt::Key_Up)
-            {
-                 last_func_page_show();
-            }
-            else if(KeyEvent->key() == Qt::Key_Down)
-            {
-                next_func_page_show();
-            }
-            else if(KeyEvent->key() == Qt::Key_Slash)   //测试 + #
-            {
-                if(ui->stackedWidget->currentIndex() == 0)
-                {
-                    if(ui->checkBox->isChecked())
-                    {
-                        ui->checkBox->setChecked(false);
-                    }
-                    else
-                        ui->checkBox->setChecked(true);
-                }
-            }
-            else if(KeyEvent->key() == Qt::Key_P)   //测试 + ptt
-            {
-                system("reboot");
-            }
-        }
-
-
-        if(KeyEvent->key() == Qt::Key_Control)
-            is_test_press = 1;     //测试键按下
-#endif
-        return true;
-    }
-    else if(event->type() == QEvent::KeyRelease)
-    {
-        QKeyEvent *KeyEvent = static_cast<QKeyEvent*>(event);
-        if(KeyEvent->key() == Qt::Key_Control)
-            is_test_press = 0;     //测试键没有按下
-
-        if((ui->stackedWidget->currentIndex() == 0))
-        {
- //           Palette_button(0,KeyEvent->key());
-        }
-        return true;\
-    }
-    return false;
-#endif
-}
 
 
 
 //下一项
 void Widget::stackedWidget_page_show(int index)
 {
-#ifdef RK_3399_PLATFORM
-//    if(index == 0)
-//        drvDimAllLED();
-#endif
-    //qDebug() << "enter stackedWidget_page_show = " << index;
     if(index < g_show_title.count())
         ui->label_Page_title->setText(g_show_title.at(index));
 
@@ -769,17 +253,6 @@ void Widget::stackedWidget_page_show(int index)
         ui->pushButton_5->setEnabled(false);
         ui->pushButton_2->setEnabled(false);
         ui->pushButton_4->setEnabled(false);
-    }
-
-
-    if(index == 7)
-    {
-        page9_info_show();
-    }
-
-    if(index != 5)
-    {
-
     }
 
     ui->stackedWidget->setCurrentIndex(index);
@@ -802,7 +275,6 @@ void Widget::stackedWidget_page_show(int index)
         ui->pushButton_Next_page->setEnabled(true);
         ui->pushButton_Last_page->setEnabled(true);
     }
-    //qDebug() << "go out stackedWidget_page_show = " << index;
 }
 
 
@@ -880,7 +352,6 @@ void Widget::on_pushButton_start_color_test_clicked()
 //page3 left
 void Widget::last_color_page_show()
 {
-//    qDebug() << "on_pushButton_P3_l_clicked";
     if(page2_show_color <= 0)
     {
         page2_show_color = 0;
@@ -910,7 +381,7 @@ void Widget::last_color_page_show()
 }
 
 
-//page3 right
+////page3 right
 void Widget::next_color_page_show()
 {
     if(page2_show_color >= 4)
@@ -964,121 +435,10 @@ void Widget::on_pushButton_FlowLEDS_clicked()
 
 
 
-
-
-
-//开始触摸测试
-void Widget::on_pushButton_start_lcd_touch_clicked()
-{
-//    lcd_touch_ui = new fingerpaint(this);
-    lcd_touch_ui->show();
-}
-
-
-void Widget::play_finished_slot(int ret)
-{
-    Q_UNUSED(ret);
-
-//    qDebug()  << "play_finished_slot";
-
-    ui->radioButton_rec->setEnabled(true);
-    ui->radioButton_loop->setEnabled(true);
-    ui->radioButton_playrec->setEnabled(true);
-    ui->radioButton_playmusic->setEnabled(true);
-    if(ui->radioButton_rec->isChecked() || ui->radioButton_loop->isChecked() )
-    {
-        ui->radioButton_michand->setEnabled(true);
-        ui->radioButton_micpanel->setEnabled(true);
-    }
-    ui->pushButton_Play->setText("开始(拨号键)");
-
-}
-
-
-
-
 //音频测试页：播放按键
 void Widget::on_pushButton_Play_clicked()
 {
-    static int loop_flag = 0;
-    QString cmd;
-
-    if(ui->pushButton_Play->text() == "开始(拨号键)"){
-        ui->pushButton_Play->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-        if(ui->radioButton_rec->isChecked())
-        {
-            cmd = "arecord -f cd  /home/deepin/test.wav";
-            qDebug()  << "录音测试" ;
-            loop_flag = 0;
-        }
-        else if(ui->radioButton_loop->isChecked())
-        {
-#ifdef RK_3399_PLATFORM
-#if 1
-            myprocess_play1[0]->start("arecord  -f cd");
-            myprocess_play1[1]->start("aplay");
-#else
-            myprocess_play->start("i2cset -f -y 4 0x10 39 0x40");
-            myprocess_play->waitForFinished();
-#endif
-#endif
-            loop_flag = 1;
-            qDebug()  << "回环测试" ;
-        }
-        else if(ui->radioButton_playrec->isChecked())
-        {
-            cmd = "aplay /home/deepin/test.wav";
-            qDebug()  << "播放录音" ;
-            loop_flag = 0;
-        }
-        else if(ui->radioButton_playmusic->isChecked())
-        {
-            cmd = "aplay /home/deepin/123.wav";
-            qDebug()  << "播放音乐" ;
-            loop_flag = 0;
-        }
-
-#ifdef RK_3399_PLATFORM
-        qDebug()<<"cmd = " << cmd;
-        if(!loop_flag)
-        {           
-            myprocess_play->start(cmd,QIODevice::ReadOnly);//ReadOnly,ReadWrite
-        }
-
-#endif
-        ui->radioButton_rec->setEnabled(false);
-        ui->radioButton_loop->setEnabled(false);
-        ui->radioButton_playrec->setEnabled(false);
-        ui->radioButton_playmusic->setEnabled(false);
-        ui->radioButton_michand->setEnabled(false);
-        ui->radioButton_micpanel->setEnabled(false);
-        ui->pushButton_Play->setText("结束");
-    }
-    else{
-        ui->pushButton_Play->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-#ifdef RK_3399_PLATFORM
-        if(myprocess_play->state()==QProcess::Running)
-            myprocess_play->kill();
-#else
-        play_finished_slot(0);
-#endif
-        if(loop_flag)//子进程杀不死，暂时这么处理吧
-        {
-#ifdef RK_3399_PLATFORM
-#if 1
-            if(myprocess_play1[0]->state()==QProcess::Running)
-                myprocess_play1[0]->kill();
-            if(myprocess_play1[1]->state()==QProcess::Running)
-                myprocess_play1[1]->kill();
-#else
-            myprocess_play->start("i2cset -f -y 4 0x10 39 0x80");
-            myprocess_play->waitForFinished();
-#endif
-#endif
-            loop_flag = 0;
-        }
-
-    }
+    mysocket->sendMessage("pushButton_Play","1");
 }
 
 
@@ -1095,181 +455,6 @@ void Widget::on_pushButton_7_clicked()
     mysocket->sendMessage("pushButton_7","1");
 
 }
-
-
-
-
-
-static bool isipAddr_sameSegment(const QString & ip1,const QString & ip2)
-{
-    int i,j;
-
-    if (ip1.isEmpty() || ip1.isEmpty())
-    {
-        return false;
-    }
-
-    i = ip1.lastIndexOf('.');
-    j = ip2.lastIndexOf('.');
-
-    if(i == j)  //长度是否相同
-    {
-        QString str1 = ip1.mid(0,i);
-        QString str2 = ip2.mid(0,i);
-
-        if(str1 == str2)  //相等吗
-        {
-            return true;
-        }
-
-    }
-
-}
-
-
-#if 0
-void Widget::getNetDeviceStats()
-{
-    QList<QNetworkInterface> list;
-//    QList<QNetworkAddressEntry> list_addrs;
-    QNetworkInterface intf;
-    list = QNetworkInterface::allInterfaces(); //获取系统里所有的网卡对象
-
-
-
-    for (int i = 0; i < list.size(); i++)
-    {
-        intf = list.at(i);
-        if(intf.name() == "lo")
-            continue;
-        if(intf.flags() & intf.IsRunning){
-            if(enp1_dev && intf.name() == "enp1s0f0"){
-                ui->label_Net_Stat1->setText("已连接");
-                ui->label_Net_Stat1->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                if(isipAddr_sameSegment(intf.addressEntries().at(0).ip().toString(),"192.168.0.200"))
-                {
-                    ui->pushButton_2->setEnabled(true);
-                    ui->label_ping_reson1->setText("");
-                }
-                else
-                {                    ui->pushButton_2->setEnabled(false);
-                    ui->label_ping_reson1->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
-                }
-            }
-            else if(enp2_dev && intf.name() == "enp1s0f1"){
-                ui->label_Net_Stat2->setText("已连接");
-                ui->label_Net_Stat2->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                if(isipAddr_sameSegment(intf.addressEntries().at(0).ip().toString(),"192.168.1.200"))
-                {
-                    ui->pushButton_4->setEnabled(true);
-                    ui->label_ping_reson2->setText("");
-                }
-                else
-                {
-                    ui->pushButton_4->setEnabled(false);
-                    ui->label_ping_reson2->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
-                }
-            }
-            else if((eth2_dev && intf.name() == "eth2") || (eth0_dev && intf.name() == "eth0")){
-                ui->label_Net_Stat3->setText("已连接");
-                ui->label_Net_Stat3->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                if(isipAddr_sameSegment(intf.addressEntries().at(0).ip().toString(),"192.168.2.200"))
-                {
-                    ui->pushButton_5->setEnabled(true);
-                    ui->label_ping_reson3->setText("");
-                }
-                else
-                {
-                    ui->pushButton_5->setEnabled(false);
-                    ui->label_ping_reson3->setText("设备ip与配测计算机网段不同，请点击\"配置rk3399主板IP\"按钮");
-                }
-            }
-        }
-        else
-        {
-            if(enp1_dev && intf.name() == "enp1s0f0"){
-                if(ui->label_Net_Stat1->text() != "已断开")
-                {
-                    ui->label_Net_Stat1->setText("已断开");
-                    ui->label_Net_Stat1->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                    ui->pushButton_2->setEnabled(false);
-                    ui->label_ping_reson1->setText("网线已断开，请连接网线");
-                    if(ping_status[0])
-                    {
-                        terminate_ping1();
-                    }
-                }
-            }
-            else if(enp2_dev && intf.name() == "enp1s0f1"){
-                if(ui->label_Net_Stat2->text() != "已断开")
-                {
-                    ui->label_Net_Stat2->setText("已断开");
-                    ui->label_Net_Stat2->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                    ui->pushButton_4->setEnabled(false);
-                    ui->label_ping_reson2->setText("网线已断开，请连接网线");
-                    if(ping_status[1])
-                    {
-                        terminate_ping2();
-                    }
-                }
-            }
-            else if((eth2_dev && intf.name() == "eth2") || (eth0_dev && intf.name() == "eth0")){
-                if(ui->label_Net_Stat3->text() != "已断开")
-                {
-                    ui->label_Net_Stat3->setText("已断开");
-                    ui->label_Net_Stat3->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 20pt \"Ubuntu\";}");
-                    ui->pushButton_5->setEnabled(false);
-                    ui->label_ping_reson3->setText("网线已断开，请连接网线");
-                    if(ping_status[2])
-                    {
-                        terminate_ping3();
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-
-void Widget::terminate_ping1()
-{
-//    if(myprocess_ping[0]->state()==QProcess::Running)
-//        myprocess_ping[0]->kill();
-
-    ui->pushButton_2->setText("ping enp1s0f0");
-    ui->checkBox_bigpack1->setEnabled(true);
-    ui->checkBox_adap1->setEnabled(true);
-    ping_status[0] = false;
-}
-
-void Widget::terminate_ping2()
-{
-//    if(myprocess_ping[1]->state()==QProcess::Running)
-//        myprocess_ping[1]->kill();
-
-    ui->pushButton_4->setText("ping enp1s0f1");
-    ui->checkBox_bigpack2->setEnabled(true);
-    ui->checkBox_adap2->setEnabled(true);
-    ping_status[1] = false;
-
-}
-void Widget::terminate_ping3()
-{
-//    if(myprocess_ping[2]->state()==QProcess::Running)
-//        myprocess_ping[2]->kill();
-
-    if(eth2_dev)
-        ui->pushButton_5->setText("ping eth2");
-    else if(eth0_dev)
-        ui->pushButton_5->setText("ping eth0");
-    ui->checkBox_bigpack3->setEnabled(true);
-    ui->checkBox_adap3->setEnabled(true);
-    ping_status[2] = false;
-
-}
-#endif
 
 
 
@@ -1352,137 +537,11 @@ void Widget::ping_info_show(QString &strMsg,int ping_num)
 
 
 
-void Widget::ping1_info_show()
-{
-//    QString strMsg = myprocess_ping[0]->readAllStandardOutput();
-//    ping_info_show(strMsg,0);
-}
-
-
-void Widget::ping2_info_show()
-{
-//    QString strMsg = myprocess_ping[1]->readAllStandardOutput();
-//    ping_info_show(strMsg,1);
-}
-
-
-void Widget::ping3_info_show()
-{
-//    QString strMsg = myprocess_ping[2]->readAllStandardOutput();
-//    ping_info_show(strMsg,2);
-}
-
-
-//void Widget::ifconfig_errinfo_show()
-//{
-//    QString strMsg = myprocess_ping1->readAllStandardError();
-//    qDebug() <<"error: "<< strMsg;
-//}
-
-
-
-//ping 进程结束
-void Widget::ping1_finished_slot(int ret)
-{
-    Q_UNUSED(ret);
-//    if(myprocess_ping[0] != nullptr){
-//        delete myprocess_ping[0];
-//        myprocess_ping[0] = nullptr;
-//    }
-}
-
-void Widget::ping2_finished_slot(int ret)
-{
-    Q_UNUSED(ret);
-//    if(myprocess_ping[1] != nullptr){
-//        delete myprocess_ping[1];
-//        myprocess_ping[1] = nullptr;
-//    }
-}
-
-
-void Widget::ping3_finished_slot(int ret)
-{
-    Q_UNUSED(ret);
-//    if(myprocess_ping[2] != nullptr){
-//        delete myprocess_ping[2];
-//        myprocess_ping[2] = nullptr;
-//    }
-}
-
-
-
-
-
-
-//网络测试页 ： ping enp1s0f0
-//void Widget::ping_pushButton_function(int ping_num)
-//{
-//    QString ping_str = "ping 192.168.0.200 -A ";
-//    QPushButton* button[3] = {ui->pushButton_2,ui->pushButton_4,ui->pushButton_5};
-//    QCheckBox* box[3] = {ui->checkBox_bigpack1,ui->checkBox_bigpack2,ui->checkBox_bigpack3};
-//    ping_finished_slot_func_t pfunc[3] = {&Widget::ping1_finished_slot,&Widget::ping2_finished_slot,&Widget::ping3_finished_slot};
-//    ping1_info_show_func_t show_func[3] = {&Widget::ping1_info_show,&Widget::ping2_info_show,&Widget::ping3_info_show};
-//    QString str[3] = {"ping enp1s0f0","ping enp1s0f1","ping eth2"};
-
-//    if(ping_num < 0 || ping_num > 2)
-//        return;
-
-
-//    if(button[ping_num]->text() == str[ping_num])
-//    {
-//        if(box[ping_num]->isChecked())
-//        {
-//            ping_str += " -s 65500 ";
-//        }
-//        myprocess_ping[ping_num] = new QProcess;
-//        myprocess_ping[ping_num]->start(ping_str,QIODevice::ReadOnly);
-//        button[ping_num]->setText("结束 ping");
-//        box[ping_num]->setEnabled(false);
-//        ping_status[ping_num] = true;
-//        error_count[ping_num] = 0;
-//        connect(this->myprocess_ping[ping_num], SIGNAL(readyReadStandardOutput()),this,SLOT(show_func[ping_num]()));//连接信号
-////        connect(this->myprocess_ping1, SIGNAL(readyReadStandardError()),this,SLOT(ping1_errinfo_show()));//连接信号
-//        connect(this->myprocess_ping[ping_num], SIGNAL(finished(int)),this,SLOT(pfunc[ping_num](int)));//连接信号
-//    }
-//    else
-//    {
-//        terminate_ping1();
-//    }
-//}
-
-
 
 //网络测试页 ： ping enp1s0f0
 void Widget::on_pushButton_2_clicked()
 {
     mysocket->sendMessage("pushButton_2","1");
-#if 0
-    QString ping_str = "ping 192.168.0.200 ";
-    if(ui->pushButton_2->text() == "ping enp1s0f0")
-    {
-        if(ui->checkBox_bigpack1->isChecked())
-        {
-            ping_str += " -s 65500 ";
-        }
-        if(ui->checkBox_adap1->isChecked())
-        {
-            ping_str += " -A ";
-        }
-//        myprocess_ping[0]->start(ping_str,QIODevice::ReadOnly);
-        ui->pushButton_2->setText("结束 ping");
-        ui->checkBox_bigpack1->setEnabled(false);
-        ui->checkBox_adap1->setEnabled(false);
-        ping_status[0] = true;
-        error_count[0] = 0;
-        ui->label_ping_err1->setText("0");
-
-    }
-    else
-    {
- //       terminate_ping1();
-    }
-#endif
 }
 
 
@@ -1490,31 +549,6 @@ void Widget::on_pushButton_2_clicked()
 void Widget::on_pushButton_4_clicked()
 {
     mysocket->sendMessage("pushButton_4","1");
-#if 0
-    QString ping_str = "ping 192.168.1.200 ";
-    if(ui->pushButton_4->text() == "ping enp1s0f1")
-    {
-        if(ui->checkBox_bigpack2->isChecked())
-        {
-            ping_str += " -s 65500 ";
-        }
-        if(ui->checkBox_adap2->isChecked())
-        {
-            ping_str += " -A ";
-        }
-//        myprocess_ping[1]->start(ping_str,QIODevice::ReadOnly);
-        ui->pushButton_4->setText("结束 ping");
-        ui->checkBox_bigpack2->setEnabled(false);
-        ui->checkBox_adap2->setEnabled(false);
-        ping_status[1] = true;
-        error_count[1] = 0;
-        ui->label_ping_err2->setText("0");
-    }
-    else
-    {
-//        terminate_ping2();
-    }
-#endif
 }
 
 
@@ -1522,45 +556,15 @@ void Widget::on_pushButton_4_clicked()
 void Widget::on_pushButton_5_clicked()
 {
     mysocket->sendMessage("pushButton_5","1");
-#if 0
-    QString ping_str = "ping 192.168.2.200 ";
-    if(ui->pushButton_5->text() == "ping eth2" || ui->pushButton_5->text() == "ping eth0")
-    {
-        if(ui->checkBox_bigpack3->isChecked())
-        {
-            ping_str += " -s 65500 ";
-        }
-        if(ui->checkBox_adap3->isChecked())
-        {
-            ping_str += " -A ";
-        }
-
-//        myprocess_ping[2]->start(ping_str,QIODevice::ReadOnly);
-        ui->pushButton_5->setText("结束 ping");
-        ui->checkBox_bigpack3->setEnabled(false);
-        ui->checkBox_adap3->setEnabled(false);
-        ping_status[2] = true;
-        error_count[2] = 0;
-        ui->label_ping_err3->setText("0");
-    }
-    else
-    {
-//        terminate_ping3();
-    }
-#endif
 }
 
 
-//音频测试页： 扬声器音量调整滑动
 
-void Widget::on_horizontalScrollBar_SpeakVol_valueChanged(int value)
+void Widget::on_horizontalScrollBar_SpeakVol_sliderMoved(int position)
 {
-//    qDebug()<<"扬声器音量 " << value  ;
-    value = value;
-#ifdef RK_3399_PLATFORM
-    drvSetSpeakVolume(value);
-#endif
+    mysocket->sendMessage("horizontalScrollBar_SpeakVol",QString::number(position));   //把这个值发送过去
 }
+
 
 
 //音频测试页： 手柄音量调整滑动
@@ -1568,9 +572,7 @@ void Widget::on_horizontalScrollBar_HandVol_valueChanged(int value)
 {
     value = value;
 //    qDebug()<<"手柄音量" << value  ;
-#ifdef RK_3399_PLATFORM
-    drvSetHandVolume(value);
-#endif
+
 }
 
 //音频测试页： 耳机音量调整滑动
@@ -1578,9 +580,7 @@ void Widget::on_horizontalScrollBar_EarphVol_valueChanged(int value)
 {
     value = value;
 //    qDebug()<<"耳机音量" << value  ;
-#ifdef RK_3399_PLATFORM
-    drvSetEarphVolume(value);
-#endif
+
 }
 
 
@@ -1627,6 +627,7 @@ void Widget::on_radioButton_loop_toggled(bool checked)
         ui->radioButton_michand->setEnabled(true);
         ui->radioButton_micpanel->setEnabled(true);
     }
+    mysocket->sendMessage("radioButton_loop",QString::number(checked));
 }
 
 void Widget::on_radioButton_playmusic_toggled(bool checked)
@@ -1636,6 +637,7 @@ void Widget::on_radioButton_playmusic_toggled(bool checked)
         ui->radioButton_michand->setEnabled(false);
         ui->radioButton_micpanel->setEnabled(false);
     }
+    mysocket->sendMessage("radioButton_playmusic",QString::number(checked));
 }
 
 void Widget::on_radioButton_playrec_toggled(bool checked)
@@ -1645,6 +647,8 @@ void Widget::on_radioButton_playrec_toggled(bool checked)
         ui->radioButton_michand->setEnabled(false);
         ui->radioButton_micpanel->setEnabled(false);
     }
+
+    mysocket->sendMessage("radioButton_playrec",QString::number(checked));
 }
 
 void Widget::on_radioButton_rec_toggled(bool checked)
@@ -1654,6 +658,7 @@ void Widget::on_radioButton_rec_toggled(bool checked)
         ui->radioButton_michand->setEnabled(true);
         ui->radioButton_micpanel->setEnabled(true);
     }
+    mysocket->sendMessage("radioButton_rec",QString::number(checked));
 }
 
 
@@ -1663,9 +668,6 @@ void Widget::on_radioButton_rec_toggled(bool checked)
 void Widget::on_horizontalScrollBar_light_valueChanged(int value)
 {
     ui->label_light_val->setText(QString::number(value));
-#ifdef RK_3399_PLATFORM
-    drvSetLcdBrt(value*2.55);   //0-255
-#endif
 }
 
 void Widget::on_horizontalScrollBar_light_sliderMoved(int position)
@@ -1706,122 +708,36 @@ void Widget::on_pushButton_10_clicked()
 
 void Widget::on_radioButton_micpanel_clicked()
 {
-//    if(myprocess_uart->state() == QProcess::Running)
-//        myprocess_uart->kill();
-////    char cmd[128] = "i2cset -f -y 4 0x10 0xa 0";
-//    myprocess_iicspi->start("i2cset -f -y 4 0x10 0xa 0");
-//    myprocess_iicspi->waitForFinished();
+
 }
 
 void Widget::on_radioButton_michand_clicked()
 {
-//    if(myprocess_uart->state() == QProcess::Running)
-//        myprocess_uart->kill();
-////    char cmd[128] = "i2cset -f -y 4 0x10 0xa 0x50";
-//    myprocess_iicspi->start("i2cset -f -y 4 0x10 0xa 0x50");
-//    myprocess_iicspi->waitForFinished();
+
 }
 
 
 
-void Widget::on_radioButton_SpeakVol_toggled(bool checked)
-{
-    if(checked)
-    {
-#ifdef RK_3399_PLATFORM
-        drvDisableSpeaker();
-#endif
-    }
-    else
-    {
-#ifdef RK_3399_PLATFORM
-        drvEnableSpeaker();
-#endif
-    }
-}
 
-void Widget::on_radioButton_HandVol_toggled(bool checked)
-{
-    if(checked)
-    {
-#ifdef RK_3399_PLATFORM
-        drvDisableHandout();
-#endif
-    }
-    else
-    {
-#ifdef RK_3399_PLATFORM
-        drvEnableHandout();
-#endif
-    }
-}
+//void Widget::on_radioButton_HandVol_toggled(bool checked)
+//{
+
+//}
 
 
 
 void Widget::on_pushButton_start_cpustress_clicked()
 {
     mysocket->sendMessage("pushButton_start_cpustress","1");   //把这个值发送过去
-
-
-#if 0
-    QString cmd;
-    int cpu_n,mem_n;
-
-    cpu_n = ui->comboBox_cpu->currentText().toInt();
-    mem_n = ui->comboBox_memory->currentText().toInt();
-
-    if(ui->checkBox_cpu_n->isChecked() && ui->checkBox_mem_n->isChecked())
-    {
-        if(cpu_n > 1)
-            cmd = "stress-ng -c " + QString::number(cpu_n-1) + " --vm 1  --vm-bytes "+ QString::number(mem_n) + "% --vm-method all --verify -t 100d";
-        else
-            cmd = "stress-ng --vm 1  --vm-bytes "+ QString::number(mem_n) + "% --vm-method all --verify -t 100d";
-    }
-    else if(ui->checkBox_cpu_n->isChecked())
-    {
-        cmd =  "stress-ng -c " + QString::number(cpu_n) +" -t 100d";
-    }
-    else if(ui->checkBox_mem_n->isChecked())
-    {
-        cmd = "stress-ng --vm 1 --vm-bytes "+ QString::number(mem_n) +"% --vm-method all --verify -t 100d";
-    }
-    else
-        return;
-    //qDebug() << "cmd" << cmd;
-
-    if(ui->pushButton_start_cpustress->text() == "开始压力测试")
-    {
-//        myprocess_cpu_stress->start(cmd);
-        ui->pushButton_start_cpustress->setText("结束压力测试");
-        ui->pushButton_start_cpustress->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-    }
-    else
-    {
-//        myprocess_cpu_stress->kill();
-//        myprocess_cpu_stress->waitForFinished();
-        ui->pushButton_start_cpustress->setText("开始压力测试");
-        ui->pushButton_start_cpustress->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-    }
-#endif
 }
 
-//struct system_config
-//{
-//    int is_cpu_stress_start;   //启动开始cpu压力测试？0表示不开启，1开启测试
-//    int is_gpio_flow_start;   //启动开启gpio流水灯吗？
-//    int is_key_lights_start;  //启动开启键灯吗？
-//    int default_show_page;    //启动默认显示页面,默认是第一页
-//    int cpu_test_core_num;    //cpu的测试核心数（第8位表示是否勾上）
-//    int mem_test_usage;       //内存测试的百分比（第8位表示是否勾上）
-//}g_sys_conf;
+
 
 
 //开机自动启动配置，记录到文件中
 void Widget::on_checkBox_cpu_stress_toggled(bool checked)
 {
-//    g_sys_conf.is_cpu_stress_start = checked;
     mysocket->sendMessage("checkBox_cpu_stress",QString::number(checked));   //把这个值发送过去
-//    SetConfigFile();
 }
 
 
@@ -1829,8 +745,6 @@ void Widget::on_checkBox_cpu_stress_toggled(bool checked)
 void Widget::on_checkBox_gpio_flow_toggled(bool checked)
 {
     mysocket->sendMessage("checkBox_gpio_flow",QString::number(checked));   //把这个值发送过去
-    //g_sys_conf.is_gpio_flow_start = checked;
-//    SetConfigFile();
 }
 
 
@@ -1838,8 +752,6 @@ void Widget::on_checkBox_gpio_flow_toggled(bool checked)
 void Widget::on_checkBox_keyLights_toggled(bool checked)
 {
     mysocket->sendMessage("checkBox_keyLights",QString::number(checked));   //把这个值发送过去
-    //g_sys_conf.is_key_lights_start = checked;
-//    SetConfigFile();
 }
 
 
@@ -1847,15 +759,11 @@ void Widget::on_checkBox_keyLights_toggled(bool checked)
 void Widget::on_comboBox_memory_currentIndexChanged(int index)
 {
     mysocket->sendMessage("comboBox_memory",QString::number(index));   //把这个值发送过去
-    //g_sys_conf.mem_test_usage = index;
-//    SetConfigFile();
 }
 
 void Widget::on_comboBox_cpu_currentIndexChanged(int index)
 {
     mysocket->sendMessage("comboBox_cpu",QString::number(index));   //把这个值发送过去
-    //g_sys_conf.cpu_test_core_num = index;
-//    SetConfigFile();
 }
 
 
@@ -1866,22 +774,16 @@ void Widget::on_comboBox_cpu_currentIndexChanged(int index)
 void Widget::on_checkBox_cpu_n_toggled(bool checked)
 {
     mysocket->sendMessage("checkBox_cpu_n",QString::number(checked));   //把这个值发送过去
-    //g_sys_conf.is_cpu_test_checked = checked;
-//    SetConfigFile();
 }
 
 void Widget::on_checkBox_mem_n_toggled(bool checked)
 {
     mysocket->sendMessage("checkBox_mem_n",QString::number(checked));   //把这个值发送过去
-    //g_sys_conf.is_mem_test_checked = checked;
-//    SetConfigFile();
 }
 
 void Widget::on_comboBox_currentIndexChanged(int index)
 {
     mysocket->sendMessage("comboBox",QString::number(index));   //把这个值发送过去
-    //g_sys_conf.default_show_page = index;
-//    SetConfigFile();
 }
 
 
@@ -1892,11 +794,8 @@ void Widget::show_boardtype_info(int keyboard_type)
     QStringList boardtype_list;
     boardtype_list << "嵌1" << "嵌2" << "嵌3" << "壁挂2" << "防风雨" << "多功能";
     ui->label_keyboard_type->setText("未知");
-    if(had_keyboard)
+ //   if(had_keyboard)
     {
-#ifdef RK_3399_PLATFORM
-//        ret =  getKeyboardType_gztest();
- #endif
         if((keyboard_type >= 0) && (keyboard_type < 6))
         {
             ui->label_keyboard_type->setText(boardtype_list.at(keyboard_type));
@@ -1914,88 +813,15 @@ void Widget::show_boardtype_info(int keyboard_type)
 
 
 
-void Widget::page9_info_show(void)
-{
-#ifdef RK_3399_PLATFORM
-    QFile file("/etc/os-version");
-
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QString line;
-        QTextStream in(&file);  //用文件构造流
-
-        line = in.readAll();
-
-        ui->textBrowser_system_info->setText(line);
-
-        file.close();
-    }
-    file.setFileName("/sys/mysysinfo/mysysinfo");
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QString line;
-        QTextStream in(&file);  //用文件构造流
-
-        line = in.readAll();
-
-        ui->textBrowser_system_info->append(line);
-
-        file.close();
-    }
-
-    on_pushButton_disk_info_clicked();
-#endif
-}
-
-
 
 
 void Widget::on_pushButton_disk_info_clicked()
 {
-
     mysocket->sendMessage("pushButton_disk_info","1");   //把这个值发送过去
-//    if(myprocess_play1[0]->state()==QProcess::Running)
-//    {
-//        myprocess_play1[0]->kill();
-//        myprocess_play1[0]->waitForFinished();
-//    }
-//    if(myprocess_play1[1]->state()==QProcess::Running)
-//    {
-//        myprocess_play1[1]->kill();
-//        myprocess_play1[1]->waitForFinished();
-//    }
-
-
-//    myprocess_play1[0]->start("fdisk -l");
-//    myprocess_play1[1]->start("grep GiB");
-
-//    myprocess_play1[1]->waitForFinished();
-
-//    ui->textBrowser_disk_info->setText(myprocess_play1[1]->readAllStandardOutput());
-
 }
 
 
 
-//void Widget::timer_uart_send_Function()
-//{
-//    QString buf = myprocess_iicspi->readAllStandardOutput();
-//    qDebug() << "timer_uart_send_Function buf = " << buf;
-//    ui->textBrowser_IICSPI->append(buf);
-////        ui->textBrowser_IICSPI->setVisible(true);
-
-//}
-
-
-
-//void Widget::sereial_info_show()
-//{
-//    QString buf = serial->readAll();
-//    if (!buf.isEmpty())
-//    {
-//        ui->textBrowser_IICSPI->append(buf);
-//    }
-//}
 
 
 //串口测试的选择，checked表示是否选择
@@ -2026,180 +852,16 @@ void Widget::on_pushButton_clear_display_clicked()
 }
 
 
-#if 0
-//查询lcd屏幕单片机版本
-void Widget::on_pushButton_lcd_mcu_info_clicked()
-{
-    QString read_data;
-    QString content;
-    int num;
-    ui->pushButton_lcd_mcu_info->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-//    if(myprocess_version->state() == QProcess::Running)
-//    {
-//        myprocess_version->kill();
-//        myprocess_version->waitForFinished();
-//    }
 
-//    myprocess_version->start("/home/deepin/mcu_update/read_mcu_version_dg_lcd");
-//    myprocess_version->waitForFinished();
-//    read_data = myprocess_version->readAllStandardOutput();
-
-    QStringList tempStringList =  read_data.split("\n");
-
-    num = tempStringList.count();
-    //qDebug() << "num = " << tempStringList.count();
-
-//    for(i=0;i<num;i++)
-//        qDebug() << tempStringList.at(i);
-    if(num >= 4)
-    {
-        QStringList templist;
-        content = tempStringList.at(1);
-        templist = content.split(":");
-        if(templist.count()>= 2)
-            ui->label_lcd_mcu_md5->setText(templist.at(1));
-        content = tempStringList.at(2);
-        num = content.indexOf(":");
-        ui->label_lcd_mcu_time->setText(content.mid(num+1));
-
-        content = tempStringList.at(3);
-        templist = content.split(":");
-        if(templist.count()>= 2)
-            ui->label_lcd_mcu_version->setText(templist.at(1));
-    }
-    ui->pushButton_lcd_mcu_info->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-}
-
-//查询键盘单片机版本
-void Widget::on_pushButton_key_mcu_info_clicked()
-{
-    QString read_data;
-    QString content;
-    int num;
-    ui->pushButton_key_mcu_info->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-//    if(myprocess_version->state() == QProcess::Running)
-//    {
-//        myprocess_version->kill();
-//        myprocess_version->waitForFinished();
-//    }
-
-
-//    myprocess_version->start("/home/deepin/mcu_update/read_mcu_version_dg_keyboard");
-//    myprocess_version->waitForFinished();
-//    read_data = myprocess_version->readAllStandardOutput();
-
-   // qDebug() << read_data;
-
-    QStringList tempStringList =  read_data.split("\n");
-
-    num = tempStringList.count();
-    //qDebug() << "num = " << tempStringList.count();
-
-//    for(i=0;i<num;i++)
-//        qDebug() << tempStringList.at(i);
-    if(num >= 4)
-    {
-        QStringList templist;
-        content = tempStringList.at(1);
-        templist = content.split(":");
-        if(templist.count()>= 2)
-            ui->label_keyb_mcu_md5->setText(templist.at(1));
-        content = tempStringList.at(2);
-        num = content.indexOf(":");
-        ui->label_keyb_mcu_time->setText(content.mid(num+1));
-
-        content = tempStringList.at(3);
-        templist = content.split(":");
-        if(templist.count()>= 2)
-            ui->label_keyb_mcu_version->setText(templist.at(1));
-    }
-    ui->pushButton_key_mcu_info->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-}
-
-
-//查询libdrv722.so版本
-void Widget::on_pushButton_drv_so_info_clicked()
-{
-    QString read_data;
-    char buildtime[32] = {0};
-    int version = 0;
-    ui->pushButton_drv_so_info->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-//    if(myprocess_version->state() == QProcess::Running)
-//    {
-//        myprocess_version->kill();
-//        myprocess_version->waitForFinished();
-//    }
-
-//    myprocess_version->start("md5sum /usr/lib/libdrv722.so");
-//    myprocess_version->waitForFinished();
-//    read_data = myprocess_version->readAllStandardOutput();
-    ui->label_drv_so_md5->setText(read_data.left(32));
-
-#ifdef RK_3399_PLATFORM
-    drvGetBuildtimeVersion(buildtime,&version);
-#endif
-    ui->label_drv_so_time->setText(buildtime);
-    ui->label_drv_so_version->setText(QString::number(version));
-    ui->pushButton_drv_so_info->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-}
-
-
-//查询jc_keyboard.ko版本
-void Widget::on_pushButton_jc_ko_info_clicked()
-{
-    QString read_data;
-    QString content;
-    int i,num,n;
-
-    ui->pushButton_jc_ko_info->setStyleSheet("QPushButton{background-color:#ff0000;font: 20pt \"Ubuntu\";}");
-//    if(myprocess_version->state() == QProcess::Running)
-//    {
-//        myprocess_version->kill();
-//        myprocess_version->waitForFinished();
-//    }
-
-//    myprocess_version->start("md5sum /root/jc_keyboard.ko");
-//    myprocess_version->waitForFinished();
-//    read_data = myprocess_version->readAllStandardOutput();
-    ui->label_jc_ko_md5->setText(read_data.left(32));
-
-//    myprocess_version->start("modinfo /root/jc_keyboard.ko");
-//    myprocess_version->waitForFinished();
-//    read_data = myprocess_version->readAllStandardOutput();
-    QStringList tempStringList =  read_data.split("\n");
-
-    num = tempStringList.count();
-    for(i=0;i<num;i++)
-    {
-        content = tempStringList.at(i);
-        if(content.startsWith("version"))
-        {
-            n = content.indexOf(":");
-            if(n>0)
-                ui->label_jc_ko_version->setText(content.mid(n+5));
-        }
-        else if(content.startsWith("description"))
-        {
-            n = content.indexOf(":");
-            n = content.indexOf(":",n+1);
-            if(n>0)
-                ui->label_jc_ko_time->setText(content.mid(n+1));
-         }
-    }
-    ui->pushButton_jc_ko_info->setStyleSheet("QPushButton{background-color:#00ff00;font: 20pt \"Ubuntu\";}");
-}
-#endif
 
 
 void Widget::on_pushButton_Last_page_clicked()
 {
-//    last_func_page_show();
     mysocket->sendMessage("pushButton_Last_page","1");
 }
 
 void Widget::on_pushButton_Next_page_clicked()
 {
-//    next_func_page_show();
     mysocket->sendMessage("pushButton_Next_page","1");
 }
 
@@ -2210,6 +872,8 @@ void Widget::on_pushButton_Help_clicked()
     dlg->setAttribute( Qt::WA_DeleteOnClose, true );
     dlg->setModal(true);   //模态对话框，该窗口不关闭，其他窗口不能运行！！！
     dlg->showExpanded();
+
+
 //    int i;
 
 //    i = ui->stackedWidget->currentIndex();
@@ -2229,36 +893,14 @@ void Widget::on_pushButton_Help_clicked()
 
 
 
-//void Widget::on_pushButton_12_clicked()
-//{
-//    if(ui->pushButton_12->isEnabled())
-//    {
-////        myftp->get("/123.txt", "./123.txt");
 
-////        qDebug() <
-///
-///
-/// < "myftp->get(123.txt, ./123.txt)";
-////        if(!myftp->login("ftp_hnhtjc","123456"))
-////            qDebug() << "login success";
-
-////        myftp->list("./");
-////        myftp->get("123.txt","123.txt");
-//    }
-//    else
-//    {
-
-//        ui->pushButton_12->setEnabled(true);
-//    }
-//}
 
 
 //闪烁间隔时间调整
-void Widget::on_lineEdit_interval_editingFinished()
+void Widget::on_lineEdit_interval_textEdited(const QString &arg1)
 {
-    mysocket->sendMessage("lineEdit_interval",ui->lineEdit_interval->text());
+    mysocket->sendMessage("lineEdit_interval",arg1);
 }
-
 
 
 
@@ -2595,3 +1237,21 @@ void Widget::on_checkBox_adap3_clicked(bool checked)
 {
     mysocket->sendMessage("checkBox_adap3",QString::number(checked));   //把这个值发送过去
 }
+
+void Widget::on_radioButton_micpanel_clicked(bool checked)
+{
+    mysocket->sendMessage("radioButton_micpanel",QString::number(checked));   //把这个值发送过去
+}
+
+void Widget::on_radioButton_michand_clicked(bool checked)
+{
+    mysocket->sendMessage("radioButton_michand",QString::number(checked));   //把这个值发送过去
+}
+
+
+
+void Widget::on_radioButton_SpeakVol_clicked(bool checked)
+{
+    mysocket->sendMessage("radioButton_SpeakVol",QString::number(checked));   //把这个值发送过去
+}
+

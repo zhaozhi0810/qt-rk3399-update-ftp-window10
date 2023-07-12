@@ -27,15 +27,15 @@ void Widget::conneted_to_server(void)
 
 void Widget::displayMessage(QByteArray buffer)
 {
-    qDebug() <<"displayMessage:" << buffer;
+//    qDebug() <<"displayMessage:" << buffer;
 
     QString header = buffer.mid(0,64);
     QString objName = header.split(",")[0].split(":")[1];
 
     buffer = buffer.mid(64);
 
-    if(check_version_wait)  //版本查询的时间比较长，需要防止重复触发
-        check_version_wait = 0;   //获得回复就允许按钮
+//    if(check_version_wait)  //版本查询的时间比较长，需要防止重复触发
+//        check_version_wait = 0;   //获得回复就允许按钮
 
 //    ui->pushButton_update->setEnabled(true);  //升级按钮，等待一下
     ui->pushButton_version_compare->setEnabled(true);   //没有受到数据就不进行版本对比了
@@ -44,8 +44,8 @@ void Widget::displayMessage(QByteArray buffer)
 
     if(objName=="pushButton_ifconfig")
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+ //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -62,8 +62,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="textBrowser_ifconfig")
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -77,8 +77,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="show_page_index")  //显示第几页
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
+//        qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -88,8 +88,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_6")  //键灯全部点亮熄灭控制
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+ //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -112,8 +112,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_7")  //键灯流水灯控制
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+ //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -136,8 +136,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton")  //键灯全部点亮熄灭控制
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+ //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -156,8 +156,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_FlowLEDS")  //工装板流水灯
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
+//        qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -176,11 +176,11 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if("connetct_init" == objName)
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
+ //       qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-        qDebug()<<"connetct_init="<<message;
+ //       qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -189,7 +189,7 @@ void Widget::displayMessage(QByteArray buffer)
             QStringList list1 = mylist[i].split(":");   //用冒号隔开
             if(list1.length() > 1)
             {
-                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
+  //              qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
                 if(list1[0] == "index")   //当前显示的页号
                 {
                     stackedWidget_page_show(list1[1].toInt());
@@ -287,7 +287,7 @@ void Widget::displayMessage(QByteArray buffer)
     else if(objName=="Palette_button")  //上一页
     {
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-        qDebug()<<"drvLightLED="<<message;
+//        qDebug()<<"drvLightLED="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int ison,keyval;
 
@@ -300,7 +300,7 @@ void Widget::displayMessage(QByteArray buffer)
             list1 = mylist[1].split(":");
             keyval =  list1[1].toInt();
 
-            qDebug()<<"ison="<<ison << " keyval=" << keyval;
+ //           qDebug()<<"ison="<<ison << " keyval=" << keyval;
 
             Palette_button(ison,keyval);
         }
@@ -360,10 +360,10 @@ void Widget::displayMessage(QByteArray buffer)
     else if("cpu_mem_info" == objName)
     {
         QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-        qDebug()<<"connetct_init="<<message;
+//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -372,7 +372,7 @@ void Widget::displayMessage(QByteArray buffer)
             QStringList list1 = mylist[i].split(":");   //用冒号隔开
             if(list1.length() > 1)
             {
-                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
+//                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
                 if(list1[0] == "mem_total")   //当前显示的页号
                 {
                     ui->label_mem_total->setText(list1[1]);
@@ -462,8 +462,8 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_start_cpustress")  //
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-        qDebug() << "size=" << size;
+//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
+//        qDebug() << "size=" << size;
 
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
@@ -491,12 +491,12 @@ void Widget::displayMessage(QByteArray buffer)
     else if(objName=="textBrowser_version")  //
     {
 //        QFile qfile("mysoft_version.txt");
-        version_store_string = QString("%1").arg(QString::fromStdString(buffer.toStdString()));  //用一个变量存起来，方便之后版本对比
-        qDebug() << version_store_string;
-        ui->textBrowser_version_info->setText(version_store_string);
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));  //用一个变量存起来，方便之后版本对比
+//        qDebug() << version_store_string;
+        ui->textBrowser_version_info->setText(message);
 
         //收到数据后，进行版本比对
-        softwareversion_version_compare(version_store_string);
+        softwareversion_version_compare(message);
 
     }
     else if(objName=="pushButton_update")
@@ -546,7 +546,7 @@ void Widget::displayMessage(QByteArray buffer)
     else if(objName=="getNetDeviceStats")  //
     {
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-        qDebug()<<"connetct_init="<<message;
+//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -555,7 +555,7 @@ void Widget::displayMessage(QByteArray buffer)
             QStringList list1 = mylist[i].split(":");   //用冒号隔开
             if(list1.length() > 1)
             {
-                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
+//                qDebug()<<"list[0]=" << list1[0]<<" list1[1]="<<list1[1];
                 if(list1[0] == "enp1s0f0")   //当前显示的页号
                 {
                     if(list1[1] == "running")
@@ -651,7 +651,7 @@ void Widget::displayMessage(QByteArray buffer)
     else if("ping_info_show" == objName)
     {
         QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-        qDebug()<<"connetct_init="<<message;
+//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
 
         if(mylist.length() > 1)
@@ -781,7 +781,85 @@ void Widget::displayMessage(QByteArray buffer)
         bool checked = message.toInt();
         ui->checkBox_adap3->setChecked(checked);   //这个....
     }
+    //2023-07-12
+    else if(objName=="pushButton_Play")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        if(message == "1")
+        {
+            ui->radioButton_rec->setEnabled(false);
+            ui->radioButton_loop->setEnabled(false);
+            ui->radioButton_playrec->setEnabled(false);
+            ui->radioButton_playmusic->setEnabled(false);
+            ui->radioButton_michand->setEnabled(false);
+            ui->radioButton_micpanel->setEnabled(false);
+            ui->pushButton_Play->setText("结束");
+        }
+        else
+        {
+            ui->radioButton_rec->setEnabled(true);
+            ui->radioButton_loop->setEnabled(true);
+            ui->radioButton_playrec->setEnabled(true);
+            ui->radioButton_playmusic->setEnabled(true);
+            if(ui->radioButton_rec->isChecked() || ui->radioButton_loop->isChecked() )
+            {
+                ui->radioButton_michand->setEnabled(true);
+                ui->radioButton_micpanel->setEnabled(true);
+            }
+            ui->pushButton_Play->setText("开始(拨号键)");
+        }
+    }
+    else if(objName=="radioButton_loop")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_loop->setChecked(checked);   //这个....
+    }
+    else if(objName=="radioButton_playmusic")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_playmusic->setChecked(checked);   //这个....
+    }
+    else if(objName=="radioButton_playrec")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_playrec->setChecked(checked);   //这个....
+    }
+    else if(objName=="radioButton_rec")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_rec->setChecked(checked);   //这个....
+    }
+    else if(objName=="radioButton_micpanel")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_micpanel->setChecked(checked);   //这个....
+    }
+    else if(objName=="radioButton_michand")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_michand->setChecked(checked);   //这个....
+    }
+    else if(objName=="horizontalScrollBar_SpeakVol")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        ui->horizontalScrollBar_SpeakVol->setValue(message.toInt());
+    }
+    else if(objName=="radioButton_SpeakVol")  //
+    {
+        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
+        bool checked = message.toInt();
+        ui->radioButton_SpeakVol->setChecked(checked);   //这个....
+    }
+    else if(objName=="lineEdit_interval")  //
+        {
+            QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
 
-
-
+            ui->lineEdit_interval->setText(message);
+        }
 }

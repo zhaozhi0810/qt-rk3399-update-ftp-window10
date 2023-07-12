@@ -7,6 +7,7 @@ MytcpSocketClient::MytcpSocketClient(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    loadSettings();
 
     socket = new QTcpSocket(this);
 
@@ -22,6 +23,8 @@ MytcpSocketClient::MytcpSocketClient(QWidget *parent) :
 
 MytcpSocketClient::~MytcpSocketClient()
 {
+    saveSettings();
+
     if(socket->isOpen())
             socket->close();
     delete ui;
@@ -57,9 +60,9 @@ void MytcpSocketClient::readSocket()
 
         if(!socketStream.commitTransaction())
         {
-            QString message = QString("%1 :: Waiting for more data to come..").arg(socket->socketDescriptor());
+        //    QString message = QString("%1 :: Waiting for more data to come..").arg(socket->socketDescriptor());
             //emit newMessage(message);
-            qDebug() << message;
+        //    qDebug() << message;
             return;
         }
 
@@ -290,4 +293,32 @@ void MytcpSocketClient::sendMessage(QString objName,QString Message_str)
 void MytcpSocketClient::on_pushButton_exit_clicked()
 {
     this->close();
+}
+
+
+
+
+void MytcpSocketClient::loadSettings()
+{
+    // UNIX-derived systems such as Linux and Android don't allow access to
+    // port 21 for non-root programs, so we will use port 2121 instead.
+
+
+    QSettings settings;
+    ui->lineEdit->setText(settings.value("settings/ip", "192.168.0.100").toString());
+}
+
+void MytcpSocketClient::saveSettings()
+{
+    QSettings settings;
+    settings.setValue("settings/ip", ui->lineEdit->text());
+}
+
+
+
+
+void MytcpSocketClient::on_lineEdit_textEdited(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    saveSettings();
 }

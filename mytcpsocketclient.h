@@ -12,7 +12,7 @@
 #include <QString>
 #include <QStandardPaths>
 #include <QTcpSocket>
-
+#include <QSettings>
 
 
 namespace Ui {
@@ -48,10 +48,16 @@ private slots:
 
     void on_pushButton_exit_clicked();
 
+    void on_lineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::MytcpSocketClient *ui;
 
     QTcpSocket* socket;
+
+    void loadSettings();
+    void saveSettings();
+
 
 };
 
