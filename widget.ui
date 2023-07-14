@@ -2036,22 +2036,6 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="QLabel" name="label_36">
         <property name="styleSheet">
          <string notr="true">font: 10pt &quot;Ubuntu&quot;;</string>
@@ -2101,9 +2085,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QWidget" name="horizontalLayoutWidget_5">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>70</x>
        <y>450</y>
-       <width>281</width>
+       <width>291</width>
        <height>22</height>
       </rect>
      </property>
@@ -2130,22 +2114,6 @@ p, li { white-space: pre-wrap; }
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="label_37">
@@ -2401,9 +2369,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QWidget" name="horizontalLayoutWidget_12">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>70</x>
        <y>300</y>
-       <width>271</width>
+       <width>291</width>
        <height>22</height>
       </rect>
      </property>
@@ -2430,22 +2398,6 @@ p, li { white-space: pre-wrap; }
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_8">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="label_47">
@@ -2675,7 +2627,7 @@ selection-color: rgb(52, 101, 164);</string>
       <rect>
        <x>90</x>
        <y>300</y>
-       <width>21</width>
+       <width>16</width>
        <height>31</height>
       </rect>
      </property>

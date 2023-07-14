@@ -127,16 +127,10 @@ Widget::Widget(QWidget *parent) :
     ui->lineEdit_ip3->setValidator(pReg);
     ui->textBrowser_ifconfig->setVisible(false);//显示ip信息的暂时不可见
 
-
-    //lightpwm = 100;
-
     ui->label_ping_reson1->setText("");
     ui->label_ping_reson2->setText("");
     ui->label_ping_reson3->setText("");
 
-    //lcdPwm = 90;
-
-//    iicspi_connect = 0;
 
     ui->toolButton_left->setVisible(false);
     ui->toolButton_right->setVisible(false);
@@ -458,13 +452,39 @@ void Widget::on_pushButton_7_clicked()
 
 
 
-void Widget::ping_info_show(QString &strMsg,int ping_num)
+
+void Widget::ping_info_show(QStringList &mylist)
 {
-    //QString strMsg = myprocess_ping1->readAllStandardOutput();
     QLabel* Ping_stat[3] = {ui->label_ping_stat1,ui->label_ping_stat2,ui->label_ping_stat3};
     QLabel* ping_err[3] = {ui->label_ping_err1,ui->label_ping_err2,ui->label_ping_err3};
     QLabel* timeval[3] = {ui->label_timeval1,ui->label_timeval2,ui->label_timeval3};
     QLabel* icmpseq[3] ={ui->label_icmpseq1,ui->label_icmpseq2,ui->label_icmpseq3};
+
+    int ping_num = mylist[0].toInt();
+
+    Ping_stat[ping_num]->setText(mylist[1]);
+    if(mylist[1] == "正常")
+    {
+        Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#00ff00;border-radius:5px;font: 10pt \"Ubuntu\";}");
+    }
+    else{
+        Ping_stat[ping_num]->setStyleSheet("QLabel{background-color:#ff0000;border-radius:5px;font: 10pt \"Ubuntu\";}");
+    }
+
+
+    ping_err[ping_num]->setText(mylist[2]);
+
+    icmpseq[ping_num]->setText(mylist[3]);
+    timeval[ping_num]->setText(mylist[4]);
+
+}
+
+
+#if 0
+void Widget::ping_info_show(QString &strMsg,int ping_num)
+{
+    //QString strMsg = myprocess_ping1->readAllStandardOutput();
+
 
     QStringList myList,message_List ;
 //    qDebug() << strMsg;
@@ -533,7 +553,7 @@ void Widget::ping_info_show(QString &strMsg,int ping_num)
         }
     }
 }
-
+#endif
 
 
 
@@ -560,10 +580,17 @@ void Widget::on_pushButton_5_clicked()
 
 
 
-void Widget::on_horizontalScrollBar_SpeakVol_sliderMoved(int position)
+//void Widget::on_horizontalScrollBar_SpeakVol_sliderMoved(int position)
+//{
+
+//}
+
+void Widget::on_horizontalScrollBar_SpeakVol_sliderReleased()
 {
+    int position = ui->horizontalScrollBar_SpeakVol->value();
     mysocket->sendMessage("horizontalScrollBar_SpeakVol",QString::number(position));   //把这个值发送过去
 }
+
 
 
 
@@ -592,10 +619,17 @@ void Widget::on_verticalScrollBar_lightpwm2_valueChanged(int value)
     ui->label_light_value_2->setText(QString::number(value));
 }
 
-void Widget::on_verticalScrollBar_lightpwm2_sliderMoved(int position)
+//void Widget::on_verticalScrollBar_lightpwm2_sliderMoved(int position)
+//{
+
+//}
+
+void Widget::on_verticalScrollBar_lightpwm2_sliderReleased()
 {
+    int position = ui->verticalScrollBar_lightpwm2->value();
     mysocket->sendMessage("verticalScrollBar_lightpwm2",QString::number(position));   //把这个值发送过去
 }
+
 
 
 
@@ -670,12 +704,16 @@ void Widget::on_horizontalScrollBar_light_valueChanged(int value)
     ui->label_light_val->setText(QString::number(value));
 }
 
-void Widget::on_horizontalScrollBar_light_sliderMoved(int position)
+//void Widget::on_horizontalScrollBar_light_sliderMoved(int position)
+//{
+
+//}
+
+void Widget::on_horizontalScrollBar_light_sliderReleased()
 {
+    int position = ui->horizontalScrollBar_light->value();
     mysocket->sendMessage("horizontalScrollBar_light",QString::number(position));   //把这个值发送过去
 }
-
-
 
 
 
@@ -1254,4 +1292,10 @@ void Widget::on_radioButton_SpeakVol_clicked(bool checked)
 {
     mysocket->sendMessage("radioButton_SpeakVol",QString::number(checked));   //把这个值发送过去
 }
+
+
+
+
+
+
 

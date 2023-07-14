@@ -118,9 +118,9 @@ private slots:
 
     void conneted_to_server(void);    //连接上服务器之后需要一些初始化
 
-    void on_verticalScrollBar_lightpwm2_sliderMoved(int position);
+//    void on_verticalScrollBar_lightpwm2_sliderMoved(int position);
 
-    void on_horizontalScrollBar_light_sliderMoved(int position);
+//    void on_horizontalScrollBar_light_sliderMoved(int position);
 
     void on_pushButton_lcd_last_color_clicked();
 
@@ -156,11 +156,17 @@ private slots:
 
     void on_radioButton_michand_clicked(bool checked);
 
-    void on_horizontalScrollBar_SpeakVol_sliderMoved(int position);
+//    void on_horizontalScrollBar_SpeakVol_sliderMoved(int position);
 
     void on_radioButton_SpeakVol_clicked(bool checked);
 
     void on_lineEdit_interval_textEdited(const QString &arg1);
+
+    void on_verticalScrollBar_lightpwm2_sliderReleased();
+
+    void on_horizontalScrollBar_light_sliderReleased();
+
+    void on_horizontalScrollBar_SpeakVol_sliderReleased();
 
 private:
     Ui::Widget *ui;
@@ -177,7 +183,8 @@ private:
     void last_func_page_show();
     void stackedWidget_page_show(int index);
 
-    void ping_info_show(QString &strMsg,int ping_num);
+//    void ping_info_show(QString &strMsg,int ping_num);
+    void ping_info_show(QStringList &mylist);
 
     void get_net_device_through_dir(void);
 
@@ -186,10 +193,10 @@ private:
     void software_packet();
 
 
-    bool ping_status[3];   //1：开始ping，0表示没有开始
-    unsigned int error_count[3];  //ping出现错误的计数值
-    unsigned int icmp_saved[3];    //通过icmp的值判断是否ping异常
-    unsigned int icmp_cur[3];   //通过icmp的值判断是否ping异常
+//    bool ping_status[3];   //1：开始ping，0表示没有开始
+//    unsigned int error_count[3];  //ping出现错误的计数值
+//    unsigned int icmp_saved[3];    //通过icmp的值判断是否ping异常
+//    unsigned int icmp_cur[3];   //通过icmp的值判断是否ping异常
     int is_test_press;    //组合键？
 //    int key_light_connect;   //键灯控制
 //    int lightpwm;    //键灯亮度

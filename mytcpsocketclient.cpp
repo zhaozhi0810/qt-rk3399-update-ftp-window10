@@ -270,8 +270,10 @@ void MytcpSocketClient::sendMessage(QString objName,QString Message_str)
                 socketStream.setVersion(QDataStream::Qt_5_7);
 
                 QByteArray header;
-                header.prepend(QString("objName:%1,fileSize:%2;").arg(objName).arg(Message_str.size()).toUtf8());
-                header.resize(64);
+                QString tmp = objName+";";
+                //header.prepend(QString("objName:%1,fileSize:%2;").arg(objName).arg(Message_str.size()).toUtf8());
+                //header.resize(64);
+                header.prepend(tmp.toUtf8());
 
                 QByteArray byteArray = Message_str.toUtf8();
                 byteArray.prepend(header);

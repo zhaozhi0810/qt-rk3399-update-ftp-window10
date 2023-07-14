@@ -27,13 +27,31 @@ void Widget::conneted_to_server(void)
 
 void Widget::displayMessage(QByteArray buffer)
 {
-//    qDebug() <<"displayMessage:" << buffer;
+    qDebug() <<"displayMessage:" << buffer;
+    int index = QString(buffer).indexOf(";");   //找到第一个封号
 
-    QString header = buffer.mid(0,64);
-    QString objName = header.split(",")[0].split(":")[1];
+    qDebug() << "index = "<< index;
+    if(index > 50 || index < 0)
+    {
+        return;
+    }
 
-    buffer = buffer.mid(64);
+    QString objName = QString(buffer).mid(0,index);  //从0开始，总共index个字符
+    qDebug() << "header = "<< objName;
+    //QStringList list_total = QString(buffer).split(";");   //用分号断开
 
+//    if(list_total.length() != 2)
+//    {
+//        qDebug() <<"displayMessage list:" << list_total;
+//        qDebug() << "length = " << list_total.length();
+//        return ;
+//    }
+
+    //QString header = list_total[0];
+    //QString objName = header.split(":")[1];    //冒号分离
+
+    QString message = QString(buffer).mid(index+1);//list_total[1];  //剩下的全部
+    qDebug() << "message = "<< message;
 //    if(check_version_wait)  //版本查询的时间比较长，需要防止重复触发
 //        check_version_wait = 0;   //获得回复就允许按钮
 
@@ -44,29 +62,15 @@ void Widget::displayMessage(QByteArray buffer)
 
     if(objName=="pushButton_ifconfig")
     {
- //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
-//        if(message == "check")
-//        {
-
-//        }
         if(message == "off")
         {
             ui->textBrowser_ifconfig->setVisible(false);
             ui->pushButton_ifconfig->setText("查看rk3399主板IP");
         }
-    //    on_pushButton_ifconfig_clicked();
+
     }
     else if(objName=="textBrowser_ifconfig")
     {
-//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         ui->textBrowser_ifconfig->setText(message);
         ui->textBrowser_ifconfig->setVisible(true);
         ui->textBrowser_ifconfig->raise();
@@ -77,22 +81,10 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="show_page_index")  //显示第几页
     {
-//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-//        qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         stackedWidget_page_show(message.toInt());
-
-
     }
     else if(objName=="pushButton_6")  //键灯全部点亮熄灭控制
     {
- //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_6->setText("结束");
@@ -112,11 +104,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_7")  //键灯流水灯控制
     {
- //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_7->setStyleSheet("QPushButton{background-color:#ff0000;font: 10pt \"Ubuntu\";}");
@@ -136,11 +123,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton")  //键灯全部点亮熄灭控制
     {
- //       QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton->setText("3.键灯全部熄灭");
@@ -156,11 +138,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_FlowLEDS")  //工装板流水灯
     {
-//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-//        qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_FlowLEDS->setText("4.工装板流水灯结束");
@@ -176,11 +153,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if("connetct_init" == objName)
     {
-//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
- //       qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
- //       qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -280,14 +252,10 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if("verticalScrollBar_lightpwm2" == objName)  //键灯测试页：键灯亮度滑条调节
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         ui->verticalScrollBar_lightpwm2->setValue(message.toInt());   //这个....
     }
     else if(objName=="Palette_button")  //上一页
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-//        qDebug()<<"drvLightLED="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int ison,keyval;
 
@@ -307,7 +275,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="checkBox")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox->setChecked(checked);   //这个....
     }
@@ -321,7 +288,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="page2_show_color")  // lcd颜色测试
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         int page2_show_color1 = message.toInt();
         if(page2_show_color1 > 4)
         {
@@ -354,16 +320,10 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="horizontalScrollBar_light")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->horizontalScrollBar_light->setValue(message.toInt());
     }
     else if("cpu_mem_info" == objName)
     {
-        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-//        qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -443,7 +403,7 @@ void Widget::displayMessage(QByteArray buffer)
                 }
                 else if(list1[0] == "start_time")   //cpu的测试核心数
                 {
-                    ui->label_start_time->setText(list1[1]+":"+list1[2]+":"+list1[3]);
+                    ui->label_start_time->setText(list1[1]+":"+list1[2]+":"+list1[3]);//
                 }
                 else if(list1[0] == "has_run_time")    //内存测试的百分比
                 {
@@ -462,11 +422,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_start_cpustress")  //
     {
-//        QString size = header.split(",")[1].split(":")[1].split(";")[0];
-//        qDebug() << "size=" << size;
-
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_start_cpustress->setText("结束压力测试");
@@ -480,19 +435,14 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="textBrowser_disk_info")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->textBrowser_disk_info->setText(message);
     }
     else if(objName=="textBrowser_system_info")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->textBrowser_system_info->setText(message);
     }
     else if(objName=="textBrowser_version")  //
     {
-//        QFile qfile("mysoft_version.txt");
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));  //用一个变量存起来，方便之后版本对比
-//        qDebug() << version_store_string;
         ui->textBrowser_version_info->setText(message);
 
         //收到数据后，进行版本比对
@@ -501,42 +451,34 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="pushButton_update")
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->textBrowser_version_info->setText(message);
     }
     //2023-07-10
     else if(objName=="radioButton_Uarttest")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         int checked = !(message.toInt() == 0);
 
         ui->radioButton_Uarttest->setChecked(checked);
     }
     else if(objName=="radioButton_Spitest")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         int checked = !(message.toInt() == 0);
 
         ui->radioButton_Spitest->setChecked(checked);
     }
     else if(objName=="radioButton_IICtest")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         int checked = !(message.toInt() == 0);
 
         ui->radioButton_IICtest->setChecked(checked);
     }
     else if(objName=="iicspi_info_show")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         ui->textBrowser_IICSPI->setText(message);
         ui->textBrowser_IICSPI->setFocus();
     }
     else if(objName=="uart_info_show")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         ui->textBrowser_IICSPI->append(message);
     }
     else if(objName=="pushButton_clear_display")  //
@@ -545,8 +487,6 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="getNetDeviceStats")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
         int i;
 
@@ -633,42 +573,29 @@ void Widget::displayMessage(QByteArray buffer)
                         ui->label_ping_reson3->setText("网线已断开，请连接网线");
                     }
                 }
-//                else if(list1[0] == "eth0")
-//                {
-//                    if(list1[1] == "running")
-//                    {
-
-
-//                    }
-//                    else if(list1[1] == "broken")
-//                    {
-
-//                    }
-//                }
             }
         }
     }
     else if("ping_info_show" == objName)
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-//        qDebug()<<"connetct_init="<<message;
         QStringList mylist = message.split(",");  //使用逗号分割
 
-        if(mylist.length() > 1)
-            ping_info_show(mylist[1],mylist[0].toInt());
-
+        if(mylist.length() >=5 )
+        {
+            ping_info_show(mylist);
+        }
+        else
+        {
+            qDebug()<< mylist.length() << mylist;
+        }
     }
     else if(objName=="pushButton_2")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_2->setText("结束 ping");
             ui->checkBox_bigpack1->setEnabled(false);
             ui->checkBox_adap1->setEnabled(false);
-            ping_status[0] = true;
-            error_count[0] = 0;
             ui->label_ping_err1->setText("0");
         }
         else
@@ -676,23 +603,15 @@ void Widget::displayMessage(QByteArray buffer)
             ui->pushButton_2->setText("ping enp1s0f0");
             ui->checkBox_bigpack1->setEnabled(true);
             ui->checkBox_adap1->setEnabled(true);
-            ping_status[0] = false;
         }
-
-
-        //on_pushButton_2_clicked();
     }
     else if(objName=="pushButton_4")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_4->setText("结束 ping");
             ui->checkBox_bigpack2->setEnabled(false);
             ui->checkBox_adap2->setEnabled(false);
-            ping_status[1] = true;
-            error_count[1] = 0;
             ui->label_ping_err2->setText("0");
         }
         else
@@ -700,21 +619,15 @@ void Widget::displayMessage(QByteArray buffer)
             ui->pushButton_4->setText("ping enp1s0f1");
             ui->checkBox_bigpack2->setEnabled(true);
             ui->checkBox_adap2->setEnabled(true);
-            ping_status[1] = false;
         }
-        //on_pushButton_4_clicked();
     }
     else if(objName=="pushButton_5")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
         if(message == "1")
         {
             ui->pushButton_5->setText("结束 ping");
             ui->checkBox_bigpack3->setEnabled(false);
             ui->checkBox_adap3->setEnabled(false);
-            ping_status[2] = true;
-            error_count[2] = 0;
             ui->label_ping_err3->setText("0");
         }
         else
@@ -725,66 +638,55 @@ void Widget::displayMessage(QByteArray buffer)
                 ui->pushButton_5->setText("ping eth2");
             ui->checkBox_bigpack3->setEnabled(true);
             ui->checkBox_adap3->setEnabled(true);
-            ping_status[2] = false;
         }
-        //on_pushButton_5_clicked();
+
     }
     //2023-07-11
     else if(objName=="lineEdit_ip1")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->lineEdit_ip1->setText(message);
     }
     else if(objName=="lineEdit_ip2")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->lineEdit_ip2->setText(message);
     }
     else if(objName=="lineEdit_ip3")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->lineEdit_ip3->setText(message);
     }
     else if(objName=="checkBox_bigpack1")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_bigpack1->setChecked(checked);   //这个....
     }
     else if(objName=="checkBox_bigpack2")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_bigpack2->setChecked(checked);   //这个....
     }
     else if(objName=="checkBox_bigpack3")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_bigpack3->setChecked(checked);   //这个....
     }
     else if(objName=="checkBox_adap1")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_adap1->setChecked(checked);   //这个....
     }
     else if(objName=="checkBox_adap2")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_adap2->setChecked(checked);   //这个....
     }
     else if(objName=="checkBox_adap3")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->checkBox_adap3->setChecked(checked);   //这个....
     }
     //2023-07-12
     else if(objName=="pushButton_Play")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         if(message == "1")
         {
             ui->radioButton_rec->setEnabled(false);
@@ -811,55 +713,45 @@ void Widget::displayMessage(QByteArray buffer)
     }
     else if(objName=="radioButton_loop")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_loop->setChecked(checked);   //这个....
     }
     else if(objName=="radioButton_playmusic")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_playmusic->setChecked(checked);   //这个....
     }
     else if(objName=="radioButton_playrec")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_playrec->setChecked(checked);   //这个....
     }
     else if(objName=="radioButton_rec")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_rec->setChecked(checked);   //这个....
     }
     else if(objName=="radioButton_micpanel")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_micpanel->setChecked(checked);   //这个....
     }
     else if(objName=="radioButton_michand")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_michand->setChecked(checked);   //这个....
     }
     else if(objName=="horizontalScrollBar_SpeakVol")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         ui->horizontalScrollBar_SpeakVol->setValue(message.toInt());
     }
     else if(objName=="radioButton_SpeakVol")  //
     {
-        QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
         bool checked = message.toInt();
         ui->radioButton_SpeakVol->setChecked(checked);   //这个....
     }
     else if(objName=="lineEdit_interval")  //
-        {
-            QString message = QString("%1").arg(QString::fromStdString(buffer.toStdString()));
-
-            ui->lineEdit_interval->setText(message);
-        }
+    {
+        ui->lineEdit_interval->setText(message);
+    }
 }
